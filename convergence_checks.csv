@@ -1,0 +1,12 @@
+Check,Resolution,Maximum absolute error,Comment
+spectral truncation,5 odd terms,0.003031485160313485,series truncation relative to 5000-term reference
+spectral truncation,10 odd terms,0.00038537077307709833,series truncation relative to 5000-term reference
+spectral truncation,20 odd terms,4.835093087574016e-05,series truncation relative to 5000-term reference
+spectral truncation,50 odd terms,3.097701692489352e-06,series truncation relative to 5000-term reference
+spectral truncation,100 odd terms,3.8726806872446673e-07,series truncation relative to 5000-term reference
+finite difference,"40 interior nodes, 300 time steps",0.002637923272977627,implicit time integration
+finite difference,"80 interior nodes, 600 time steps",0.0007085234173261901,implicit time integration
+finite difference,"120 interior nodes, 800 time steps",0.0003365608322234426,implicit time integration
+finite element,"30 linear elements, 300 time steps",0.001692039724178418,consistent-mass Galerkin solution
+finite element,"60 linear elements, 600 time steps",0.00045512024369542825,consistent-mass Galerkin solution
+finite element,"90 linear elements, 700 time steps",0.00025156312718094265,consistent-mass Galerkin solution

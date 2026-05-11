@@ -1,0 +1,6 @@
+Case,cv_m2_s,T_s,h_m,sigma_eff0_kPa,Pu_kPa,phi_deg,tau_kPa,Infrastructure reading,Pi,R_Pi,retained_pressure_kPa,FS_PD,Regime
+A,5e-06,2.0,0.05,50.0,20.0,30.0,25.0,short saturated shear pulse below a road cut,0.003999999999999999,0.9048467103831979,18.096934207663956,0.7367697449271822,nearly undrained
+B,5e-06,60.0,0.05,50.0,20.0,30.0,25.0,prolonged rapid movement affecting a transport corridor,0.11999999999999998,0.48505639349309465,9.701127869861892,0.9306625868949417,partly drained
+C,0.0001,60.0,0.05,50.0,20.0,30.0,25.0,more permeable drainage path or engineered relief drain,2.3999999999999995,0.03472222221475239,0.6944444442950479,1.138663030905212,drained
+D,2e-05,20.0,0.03,65.0,18.0,32.0,31.0,thin sheared zone behind a retaining structure,0.4444444444444445,0.18520044261768245,3.3336079671182843,1.2430141427152681,partly drained
+E,1e-06,120.0,0.08,45.0,16.0,28.0,23.0,low-permeability colluvium supporting a rural road,0.018749999999999996,0.7939870935742451,12.703793497187922,0.7466172871492158,partly drained

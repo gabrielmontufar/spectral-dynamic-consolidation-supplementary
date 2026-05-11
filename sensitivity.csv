@@ -1,0 +1,8 @@
+Parameter,Base value,Normalized sensitivity of FS_PD,Interpretation
+tau,25.0,-0.9999999999999999,destabilizing when increased
+Pu,20.0,-0.23997129255549948,destabilizing when increased
+h,0.05,-0.23475000694190004,destabilizing when increased
+cv,5e-06,0.11747815388122343,stabilizing when increased
+T,60.0,0.11747815388122343,stabilizing when increased
+phi,30.0,1.2090447701017542,stabilizing when increased
+sigma_eff0,50.0,1.242987280100471,stabilizing when increased
