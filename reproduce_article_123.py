@@ -21,11 +21,12 @@ from docx.oxml import OxmlElement, parse_xml
 from docx.oxml.ns import qn
 from docx.shared import Cm, Inches, Pt
 from lxml import etree
+from matplotlib.patches import Polygon, Rectangle
 from PIL import Image
 
 
-ROOT = Path(r"C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art")
 SOURCE = Path(r"C:\Users\gjm31\OneDrive\Escritorio\123 avo art")
+ROOT = SOURCE
 DELIVERY = ROOT / "Entrega Acta Geotechnica 20260511"
 MANUSCRIPT_DIR = DELIVERY / "01 Manuscript"
 FIG_DIR = DELIVERY / "02 Figures"
@@ -287,9 +288,9 @@ def build_computation_package() -> dict[str, pd.DataFrame]:
         for sheet, df in {
             "Table 1 variables": variable_table(),
             "Table 2 regimes": regimes,
-            "Table 3 benchmark": display_benchmark_compact_table(bench),
-            "Table 4 validation": display_validation_table(validation).round(6),
-            "Table 5 convergence": convergence.round(8),
+            "Table 3 validation": display_validation_table(validation).round(6),
+            "Table 4 convergence": convergence.round(8),
+            "Table 5 benchmark": display_benchmark_compact_table(bench),
             "Table 6 literature": literature_comparison_table(),
             "Table 7 external": external_consistency_table(),
             "Table 8 sensitivity": display_sensitivity_table(sensitivity).round(5),
@@ -506,19 +507,19 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 6)
     ax.axis("off")
-    slope_x = [1, 9]
-    slope_y = [1.2, 3.8]
-    ax.plot(slope_x, slope_y, color="#6d6d6d", linewidth=3)
-    ax.fill_between([1, 9], [1.2, 3.8], [0.6, 0.6], color="#dfd5c3", alpha=0.9, edgecolor="black", linewidth=0.8)
-    ax.plot([1.4, 8.4], [1.5, 3.5], color="#1f77b4", linewidth=5, alpha=0.85)
-    ax.text(5.0, 2.75, "saturated shear band, thickness h", ha="center", va="center", fontsize=11, color="black", rotation=16)
-    ax.annotate("drained boundary", xy=(1.55, 1.55), xytext=(1.2, 4.7), arrowprops=dict(arrowstyle="->", lw=1.2, color="black"), fontsize=10, color="black")
-    ax.annotate("drained boundary", xy=(8.2, 3.45), xytext=(6.9, 5.1), arrowprops=dict(arrowstyle="->", lw=1.2, color="black"), fontsize=10, color="black")
-    ax.annotate("rapid loading duration T", xy=(5.0, 3.05), xytext=(3.3, 5.25), arrowprops=dict(arrowstyle="->", lw=1.2, color="black"), fontsize=10, color="black")
-    ax.add_patch(plt.Rectangle((5.8, 4.2), 2.9, 0.35, fill=False, edgecolor="black", linewidth=1.4))
-    ax.plot([5.8, 8.7], [4.38, 4.38], color="black", linewidth=4)
-    ax.text(7.25, 4.85, "road / civil corridor", ha="center", va="bottom", fontsize=10, color="black")
-    ax.text(5.2, 0.35, "Output: retained pore pressure R(Pi)Pu and partly drained stability", ha="center", fontsize=11, color="black")
+    ax.add_patch(Polygon([[1.0, 0.95], [9.0, 0.95], [9.0, 3.55], [1.0, 1.35]], closed=True, facecolor="#ddd4c3", edgecolor="black", linewidth=1.1))
+    ax.plot([1.0, 9.0], [1.35, 3.55], color="#6b6b6b", linewidth=3.0, solid_capstyle="butt")
+    ax.plot([1.55, 8.45], [1.66, 3.46], color="#2f86c1", linewidth=5.0, solid_capstyle="butt", zorder=3)
+    ax.add_patch(Rectangle((6.50, 4.35), 2.25, 0.34, fill=False, edgecolor="black", linewidth=1.4))
+    ax.add_patch(Rectangle((6.50, 4.51), 2.25, 0.08, fill=True, color="black"))
+    ax.text(8.05, 5.15, "road / civil corridor", ha="center", va="bottom", fontsize=11, color="black")
+    ax.annotate("", xy=(8.05, 4.58), xytext=(8.05, 5.05), arrowprops=dict(arrowstyle="->", lw=1.2, color="black"))
+    ax.text(1.42, 4.80, "upslope drained\nboundary", ha="center", va="bottom", fontsize=11, color="black")
+    ax.annotate("", xy=(1.55, 1.70), xytext=(1.38, 4.60), arrowprops=dict(arrowstyle="->", lw=1.2, color="black"))
+    ax.text(4.70, 5.15, "rapid loading\nduration T", ha="center", va="bottom", fontsize=11, color="black")
+    ax.annotate("", xy=(6.30, 3.22), xytext=(4.95, 4.98), arrowprops=dict(arrowstyle="->", lw=1.2, color="black"))
+    ax.text(4.15, 3.20, "saturated shear band\nthickness h", ha="center", va="center", fontsize=11, color="black", rotation=15, zorder=4)
+    ax.text(5.0, 0.34, "Output: retained pore pressure R(Pi)Pu and partly drained stability", ha="center", va="center", fontsize=11, color="black")
     fig.savefig(FIG_DIR / "Figure 1. Conceptual drainage transition in an infrastructure slope.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
@@ -566,17 +567,16 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     plt.close(fig)
 
     # Fig. 5 transition map.
-    h_vals = np.logspace(-2, -0.3, 120)
-    t_vals = np.logspace(0, 3, 140)
+    h_vals = np.logspace(-2, -0.3, 240)
+    t_vals = np.logspace(0, 3, 240)
     H, T = np.meshgrid(h_vals, t_vals)
     cv = 5e-6
     Pi = cv * T / H**2
     R = spectral_retention(Pi)
     fig, ax = plt.subplots(figsize=(7.2, 5.2), dpi=240, constrained_layout=True)
-    levels = [0, 0.1, 0.9, 1]
-    cf = ax.contourf(H, T, R, levels=levels, colors=["#d9f0d3", "#fff7bc", "#fdd49e"], alpha=0.95)
+    levels = [0, 0.1, 0.9, 1.01]
+    ax.contourf(H, T, R, levels=levels, colors=["#d9f0d3", "#fff7bc", "#fdd49e"], alpha=0.95)
     c = ax.contour(H, T, R, levels=[0.1, 0.5, 0.9], colors="black", linewidths=[1.0, 1.3, 1.0])
-    ax.clabel(c, fmt={0.1: "R=0.1", 0.5: "R=0.5", 0.9: "R=0.9"}, fontsize=9)
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_xlabel("Shear-band thickness h (m)")
@@ -584,6 +584,10 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     ax.text(0.012, 750, "drained", fontsize=10, color="black")
     ax.text(0.023, 45, "partly drained", fontsize=10, color="black")
     ax.text(0.18, 2.5, "nearly undrained", fontsize=10, color="black")
+    label_box = dict(boxstyle="round,pad=0.18", facecolor="white", edgecolor="none", alpha=0.90)
+    ax.text(0.030, 330, "R=0.1", fontsize=9, color="black", bbox=label_box, rotation=55)
+    ax.text(0.027, 31, "R=0.5", fontsize=9, color="black", bbox=label_box, rotation=25)
+    ax.text(0.205, 64, "R=0.9", fontsize=9, color="black", bbox=label_box, rotation=23)
     ax.set_title(r"Regime map for $c_v = 5\times10^{-6}$ m$^2$/s", color="black")
     fig.savefig(FIG_DIR / "Figure 5. Drainage-regime map for slope screening.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
@@ -612,6 +616,64 @@ def mathml_to_omml(mathml: str) -> str:
 
 def eq(mathml_body: str) -> str:
     return f'<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">{mathml_body}</math>'
+
+
+def repair_omml_blanks(omml: str) -> str:
+    """Remove empty equation-editor boxes introduced by MathML-to-OMML conversion."""
+    ns = {"m": "http://schemas.openxmlformats.org/officeDocument/2006/math"}
+    m_ns = ns["m"]
+
+    def mq(tag: str) -> str:
+        return f"{{{m_ns}}}{tag}"
+
+    def mtext(el) -> str:
+        return "".join(el.xpath(".//m:t/text()", namespaces=ns))
+
+    def repair_subscript_after_sup(parent) -> None:
+        children = list(parent)
+        i = 0
+        while i < len(children) - 1:
+            cur, nxt = children[i], children[i + 1]
+            if cur.tag == mq("sSup") and nxt.tag == mq("sSub"):
+                e = nxt.find("m:e", namespaces=ns)
+                sub = nxt.find("m:sub", namespaces=ns)
+                if e is not None and sub is not None and len(e) == 0 and not "".join(e.itertext()).strip():
+                    new = etree.Element(mq("sSub"))
+                    new_e = etree.SubElement(new, mq("e"))
+                    parent.remove(cur)
+                    parent.remove(nxt)
+                    new_e.append(cur)
+                    new.append(sub)
+                    parent.insert(i, new)
+                    children = list(parent)
+                    continue
+            i += 1
+        for child in list(parent):
+            repair_subscript_after_sup(child)
+
+    root = etree.fromstring(omml.encode("utf-8"))
+    txt = mtext(root)
+    nary = root.find("m:nary", namespaces=ns)
+    if nary is not None:
+        e = nary.find("m:e", namespaces=ns)
+        if e is not None and len(e) == 0 and not "".join(e.itertext()).strip():
+            children = list(root)
+            ni = children.index(nary)
+            if txt.startswith("Pu="):
+                r = etree.SubElement(e, mq("r"))
+                t = etree.SubElement(r, mq("t"))
+                t.text = "q(t)dt"
+                for child in list(root):
+                    if child.tag == mq("r") and mtext(child) == "q(t)dt":
+                        root.remove(child)
+            elif txt.startswith("R(") and "m=1,3,5" in txt:
+                for cand in children[ni + 1 :]:
+                    if cand.tag == mq("f") and "exp" in mtext(cand):
+                        root.remove(cand)
+                        e.append(cand)
+                        break
+    repair_subscript_after_sup(root)
+    return etree.tostring(root, encoding="unicode")
 
 
 EQUATIONS = {
@@ -659,7 +721,7 @@ def add_equation(doc: Document, key: str) -> None:
     EQ_COUNTER += 1
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    omml = mathml_to_omml(EQUATIONS[key])
+    omml = repair_omml_blanks(mathml_to_omml(EQUATIONS[key]))
     p._p.append(parse_xml(omml))
     r = p.add_run(f"    ({EQ_COUNTER})")
     r.font.name = "Times New Roman"
@@ -842,6 +904,7 @@ def build_docx(data: dict[str, pd.DataFrame]) -> Path:
         "The contribution is threefold. First, a retained-pressure function R(Pi) is derived from the spectral solution of one-dimensional consolidation with internal pressure generation. Second, R(Pi) is coupled to effective stress and a partly drained factor of safety, so that drainage state and mechanical stability are evaluated in the same equation set. Third, independent finite-difference and finite-element solutions verify the spectral expression, and a reproducible benchmark demonstrates how the criterion can be used for civil-infrastructure slope screening. The risk-oriented motivation is consistent with landslide risk frameworks and infrastructure-vulnerability studies [31-35].",
     )
 
+    add_paragraph(doc, "The variables used by the criterion are summarized in Table 1 before the governing equations are introduced.")
     add_caption(doc, "Table 1. Variables used in the dynamic-consolidation criterion.")
     add_table_from_df(doc, variable_table(), size=8)
 
@@ -876,6 +939,7 @@ def build_docx(data: dict[str, pd.DataFrame]) -> Path:
     add_equation(doc, "psi")
     add_paragraph(doc, "A positive value of Psi indicates a stable state under the current demand, whereas a negative value indicates instability after accounting for retained pore pressure.")
 
+    add_paragraph(doc, "Table 2 lists the retained-pressure thresholds used to interpret the drained, partly drained and nearly undrained regimes.")
     add_caption(doc, "Table 2. Retention-based drainage-regime boundaries for the double-drainage benchmark.")
     add_table_from_df(doc, data["regimes"].round(6), size=8)
     add_paragraph(doc, "Figure 1 defines the slope-infrastructure setting used for interpretation, and Fig. 2 shows the resulting spectral retention curve before the benchmark is evaluated.")
@@ -888,6 +952,7 @@ def build_docx(data: dict[str, pd.DataFrame]) -> Path:
     add_paragraph(doc, "The second is a one-dimensional linear finite-element discretization with a consistent mass matrix:")
     add_equation(doc, "fem")
     add_paragraph(doc, "Both schemes solve the same dimensionless problem u_t=u_xx+1 with drained ends, but they use different algebraic operators. Agreement with the spectral expression is therefore a numerical reproducibility check rather than a restatement of the same series.")
+    add_paragraph(doc, "Table 3 compares the spectral expression with finite-difference and finite-element estimates at representative dynamic-consolidation numbers.")
     add_caption(doc, "Table 3. Independent numerical verification of the spectral retention function.")
     add_table_from_df(doc, display_validation_table(data["validation"]).round(6), size=8)
     add_paragraph(doc, "Table 4 reports a convergence check for the spectral truncation, finite-difference grid and finite-element mesh. The largest errors occur near the central transition, where the curve is steepest; the selected production resolutions keep the retained-pressure error below the precision needed for regime classification.")
@@ -900,6 +965,7 @@ def build_docx(data: dict[str, pd.DataFrame]) -> Path:
     doc.add_page_break()
     add_heading(doc, "5 Benchmark for rapid saturated landslides", 1)
     add_paragraph(doc, "The benchmark is synthetic and is not presented as a field calibration. Its role is to make the criterion reproducible and to test whether the hydraulic time scale alone can move an infrastructure slope across drainage regimes. The same equation set is applied to road cuts, embankment slopes and retaining-system back-slopes, using transparent parameter values that reviewers can modify.")
+    add_paragraph(doc, "Table 5 reports the synthetic infrastructure-slope cases used to test how the retained-pressure criterion changes practical regime classification.")
     add_caption(doc, "Table 5. Synthetic benchmark cases for infrastructure slope screening.")
     add_table_from_df(doc, display_benchmark_compact_table(data["bench"]), size=7.8)
     add_paragraph(doc, "Figure 4 shows that the factor of safety changes continuously between the undrained and drained limits. Figure 5 converts the same criterion into a practical regime map for slope screening when the coefficient of consolidation is fixed and h and T are uncertain.")
@@ -917,10 +983,12 @@ def build_docx(data: dict[str, pd.DataFrame]) -> Path:
 
     add_heading(doc, "7 Sensitivity and infrastructure interpretation", 1)
     add_paragraph(doc, "Because Pi scales with c_vT/h2, the shear-band thickness has a quadratic influence. This is important for infrastructure slopes because h is frequently inferred from geomorphology, boreholes or post-failure observations rather than directly measured during motion. A sensitivity check is therefore part of the proposed protocol rather than an optional add-on.")
+    add_paragraph(doc, "Table 8 reports the local sensitivity ranking used to interpret which parameters control the partly drained stability index.")
     add_caption(doc, "Table 8. Normalized sensitivity of the partly drained factor of safety for the central benchmark state.")
     add_table_from_df(doc, display_sensitivity_table(data["sensitivity"]).round(5), size=8)
     add_paragraph(doc, "The tornado-style sensitivity in Fig. 6 shows that h, T and c_v control drainage classification, whereas shear strength and demand govern how the retained pressure maps into stability. This separation helps avoid treating a hydraulic classification as a complete safety assessment.")
     add_figure(doc, FIG_DIR / "Figure 6. Sensitivity of partly drained stability.png", "Fig. 6. Normalized sensitivity of the partly drained factor of safety for the central benchmark state.")
+    add_paragraph(doc, "Table 9 translates the retained-pressure criterion into common civil-infrastructure settings after the numerical checks and sensitivity analysis.")
     add_caption(doc, "Table 9. Engineering use of the retained-pressure criterion for civil-infrastructure slopes.")
     add_table_from_df(doc, infrastructure_table(), size=7.4)
 
@@ -1094,8 +1162,9 @@ The data are synthetic and are intended for reproducibility of the mathematical 
 """
     (REPO_DIR / "README.md").write_text(readme, encoding="utf-8")
     script_src = Path(__file__).resolve()
-    shutil.copy2(script_src, REPO_DIR / "reproduce_article_123.py")
-    shutil.copy2(script_src, SUPP_DIR / "reproduce_article_123.py")
+    for dest in [REPO_DIR / "reproduce_article_123.py", SUPP_DIR / "reproduce_article_123.py"]:
+        if script_src != dest.resolve():
+            shutil.copy2(script_src, dest)
     for csv in REPO_DIR.glob("*.csv"):
         shutil.copy2(csv, SUPP_DIR / csv.name)
     zip_path = SUPP_DIR / "Supplementary files.zip"
@@ -1115,9 +1184,9 @@ def main() -> None:
     tables = {
         "Variables used in the criterion": variable_table(),
         "Retention regime boundaries": data["regimes"].round(6),
-        "Synthetic benchmark cases": display_benchmark_table(data["bench"]).drop(columns=["Infrastructure reading"]),
         "Numerical validation": display_validation_table(data["validation"]).round(6),
         "Convergence checks": data["convergence"].round(8),
+        "Synthetic benchmark cases": display_benchmark_table(data["bench"]).drop(columns=["Infrastructure reading"]),
         "Literature comparison": data["literature"],
         "External consistency": data["external"],
         "Sensitivity": display_sensitivity_table(data["sensitivity"]).round(5),
@@ -1150,6 +1219,8 @@ Table images and XLSX: {TABLE_DIR}
 Declarations: {DECL_DIR}
 Journal instructions/protocol: {PROTO_DIR}
 Supplementary repository worktree: {REPO_DIR}
+
+Final correction pass: equations checked for empty OMML placeholders; figures 1 and 5 redrawn to avoid text-arrow or label-line intersections; all table captions are cited in the manuscript before appearance; exported table files are numbered consistently with the manuscript.
 """
     (DELIVERY / "00 Delivery manifest.txt").write_text(manifest, encoding="utf-8")
     (DELIVERY / "Enlace GitHub suplementarios.txt").write_text(REPO_URL + "\n", encoding="utf-8")
