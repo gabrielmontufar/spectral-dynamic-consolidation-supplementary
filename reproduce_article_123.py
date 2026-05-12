@@ -257,20 +257,28 @@ def save_csv(data: dict[str, pd.DataFrame]) -> None:
 def make_figures(data: dict[str, pd.DataFrame]) -> None:
     FIG_OUT.mkdir(exist_ok=True)
 
-    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=220, constrained_layout=True)
-    slope = Polygon([[0.5, 0.8], [6.3, 0.8], [6.3, 2.9], [0.5, 1.45]], closed=True, facecolor="#d9cfbb", edgecolor="black", lw=1.0)
+    fig, ax = plt.subplots(figsize=(8.9, 5.0), dpi=220, constrained_layout=True)
+    slope = Polygon(
+        [[0.35, 0.70], [8.45, 0.70], [8.45, 3.15], [0.35, 1.25]],
+        closed=True,
+        facecolor="#ddd2bd",
+        edgecolor="black",
+        lw=1.2,
+    )
     ax.add_patch(slope)
-    ax.plot([0.8, 5.6], [1.60, 2.65], color="#2b8cbe", lw=4)
-    ax.plot([0.6, 6.2], [1.48, 2.95], color="#6b6b6b", lw=2)
-    ax.add_patch(Rectangle((4.8, 3.25), 1.0, 0.12, facecolor="none", edgecolor="black", lw=1.2))
-    ax.add_patch(Rectangle((4.8, 3.37), 1.0, 0.12, facecolor="none", edgecolor="black", lw=1.2))
-    ax.annotate("upslope drained\nboundary", xy=(0.85, 1.58), xytext=(1.05, 3.55), ha="center", arrowprops=dict(arrowstyle="->", lw=1.2))
-    ax.annotate("rapid loading\nduration T", xy=(4.55, 2.55), xytext=(3.85, 3.75), ha="center", arrowprops=dict(arrowstyle="->", lw=1.2))
-    ax.annotate("road / civil corridor", xy=(5.3, 3.43), xytext=(5.45, 3.85), ha="center", arrowprops=dict(arrowstyle="->", lw=1.2))
-    ax.text(2.8, 2.20, "saturated shear band\nthickness h", rotation=14, ha="center", va="center")
-    ax.text(3.4, 0.45, "Output: retained pore pressure R(Pi)Pu and partly drained stability", ha="center")
-    ax.set_xlim(0, 7)
-    ax.set_ylim(0, 4.3)
+    ax.plot([1.10, 7.90], [1.55, 3.08], color="#0b79bd", lw=5.0, solid_capstyle="butt")
+    ax.plot([1.10, 8.45], [1.55, 3.15], color="#666666", lw=2.4, solid_capstyle="butt")
+    ax.add_patch(Rectangle((6.20, 3.60), 1.90, 0.16, facecolor="white", edgecolor="black", lw=1.2))
+    ax.add_patch(Rectangle((6.20, 3.76), 1.90, 0.16, facecolor="white", edgecolor="black", lw=1.2))
+    ax.plot([6.20, 8.10], [3.72, 3.72], color="black", lw=4.0, solid_capstyle="butt")
+    ax.annotate("upslope drained\nboundary", xy=(1.15, 1.58), xytext=(0.75, 3.70), ha="center", arrowprops=dict(arrowstyle="->", lw=1.3))
+    ax.annotate("rapid loading\nduration T", xy=(5.02, 2.60), xytext=(4.18, 4.28), ha="center", arrowprops=dict(arrowstyle="->", lw=1.3))
+    ax.annotate("road / civil corridor", xy=(7.15, 3.92), xytext=(7.15, 4.55), ha="center", arrowprops=dict(arrowstyle="->", lw=1.3))
+    ax.annotate("", xy=(3.55, 2.18), xytext=(3.42, 1.84), arrowprops=dict(arrowstyle="<->", lw=1.3))
+    ax.text(3.24, 2.38, "saturated shear band\nthickness h", ha="center", va="bottom")
+    ax.text(4.45, 0.30, r"Output: retained pore pressure R($\Pi$)P$_u$ and partly drained stability", ha="center")
+    ax.set_xlim(0, 8.9)
+    ax.set_ylim(0, 4.8)
     ax.axis("off")
     fig.savefig(FIG_OUT / "figure_1_conceptual_slope.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
