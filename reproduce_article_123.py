@@ -11,6 +11,7 @@ benchmark. It uses only numpy, pandas and matplotlib.
 from __future__ import annotations
 
 import math
+import shutil
 from pathlib import Path
 
 import matplotlib
@@ -26,6 +27,7 @@ from matplotlib.patches import Polygon, Rectangle
 
 OUT = Path(__file__).resolve().parent
 FIG_OUT = OUT / "generated_figures"
+SOURCE_FIG = OUT / "source_figures" / "figure_1_conceptual_slope.png"
 
 
 def spectral_retention(pi: np.ndarray | float, terms: int = 500) -> np.ndarray | float:
@@ -282,6 +284,8 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     ax.axis("off")
     fig.savefig(FIG_OUT / "figure_1_conceptual_slope.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
+    if SOURCE_FIG.exists():
+        shutil.copy2(SOURCE_FIG, FIG_OUT / "figure_1_conceptual_slope.png")
 
     curve = data["retention_curve"]
     fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=220, constrained_layout=True)
