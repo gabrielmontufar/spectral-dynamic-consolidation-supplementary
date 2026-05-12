@@ -3,4 +3,4 @@ Velocity-based drainage choice,movement rate or loading rate,quick practical dec
 Conventional drained/undrained stability,selected strength envelope,clear design bounds,no intermediate state unless analyst brackets cases,computes partly drained effective stress continuously
 Classical consolidation,time factor,well established diffusion physics,not directly linked to landslide FS in screening workflows,couples spectral pressure retention to FS
 Transient seepage analysis,boundary flux and hydraulic gradients,captures rainfall or seepage forcing,may not represent rapid internal pressure generation,adds a source-driven rapid-event operator
-Fully coupled hydro-mechanical FEM,"field equations, constitutive law and geometry",most general numerical route,costly and opaque for screening inventories,provides a reproducible pre-analysis and check on regime choice
+Fully coupled hydromechanical FEM,"field equations, constitutive law and geometry",most general numerical route,costly and opaque for screening inventories,provides a reproducible pre-analysis and check on regime choice
