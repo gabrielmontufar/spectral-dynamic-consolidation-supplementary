@@ -202,7 +202,7 @@ def main() -> None:
         agg.to_csv(OUT / "oso_ring_shear_validation_summary.csv", index=False)
         fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
         data = [summary.loc[summary["model"] == model, "rmse_validation"] for model in ["double", "single"]]
-        ax.boxplot(data, labels=["double drainage", "single drainage"], showfliers=True)
+        ax.boxplot(data, tick_labels=["double drainage", "single drainage"], showfliers=True)
         ax.set_ylabel("Validation RMSE in normalized retained pressure")
         ax.grid(axis="y", alpha=0.25)
         fig.savefig(FIG_OUT / "figure_10_oso_validation_rmse.png", bbox_inches="tight", facecolor="white")
