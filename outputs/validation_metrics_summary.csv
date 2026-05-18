@@ -1,0 +1,15 @@
+metric,value,note
+input_records_file,oso_ring_shear_normalized_records.csv,existing Oso consistency dataset
+input_metrics_file,oso_ring_shear_consistency_metrics.csv,existing per-record held-out metrics
+input_predictions_file,oso_ring_shear_consistency_predictions.csv,existing sampled observed/predicted curves
+normalized_record_rows,39895,rows in available normalized Oso records
+unique_source_records,11,unique Oso source files
+prediction_rows_used,3960,sampled prediction rows used for residual metrics
+models_compared,"double,single",models present in consistency metrics
+best_model_count_double,7,records where double is listed as best
+best_model_count_single,4,records where single is listed as best
+best_model_by_median_prediction_rmse,single,lower median residual RMSE on existing sampled predictions
+best_model_by_median_heldout_rmse,single,lower median held-out RMSE from existing metrics file
+lowest_median_prediction_rmse,0.06635327284150098,normalized retained-pressure units
+lowest_median_heldout_rmse,0.0371970763058578,normalized retained-pressure units
+master_table_rows,22,one row per source file and model combination in the consistency metrics

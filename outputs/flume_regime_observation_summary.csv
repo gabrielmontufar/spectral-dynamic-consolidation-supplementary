@@ -1,0 +1,26 @@
+dataset_id,experiment_file,station,n_points,ru_median,ru_p95,regime_obs,interpretation
+usgs_flume_2016,2016_06_14_archive_corrected.csv,-2.9,60001,-2.8677966101694916,0.6170109201726911,drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_14_archive_corrected.csv,31.7,60001,0.521003360537686,0.7593956798601573,partly_drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_14_archive_corrected.csv,65.4,60001,0.47793489960286534,0.8056204265919351,partly_drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_14_archive_corrected.csv,80,60001,0.5996168979084697,0.7385992452351504,partly_drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_14_archive_corrected.csv,89.8,60001,0.11538461538461538,1.217893217893218,drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_15_archive_corrected.csv,-2.9,60001,-3.3733826247689462,0.8010645375914835,drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_15_archive_corrected.csv,31.7,60001,0.7059201307800093,0.835,partly_drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_15_archive_corrected.csv,65.4,60001,0.5495253447967042,0.7547868912823346,partly_drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_15_archive_corrected.csv,80,60001,0.7100230489899758,0.8065646563728068,partly_drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_15_archive_corrected.csv,89.8,60001,0.01851851851851854,1.2604166666666665,drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_16_archive_corrected.csv,-2.9,60001,-2.298135593220339,0.8655771984025317,drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_16_archive_corrected.csv,31.7,60001,0.732065553494125,0.9468630725190839,partly_drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_16_archive_corrected.csv,65.4,60001,1.0663102607390733,1.7180685358255454,nearly_undrained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_16_archive_corrected.csv,80,60001,0.14990689854653264,0.24915254237288137,drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_16_archive_corrected.csv,89.8,60001,0.5203252032520324,3.070175438596491,partly_drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_21_archive_corrected.csv,-2.9,60001,-4.148468379446641,1.0152044513457557,drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_21_archive_corrected.csv,31.7,60001,0.6734267006184067,0.8913450578081745,partly_drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_21_archive_corrected.csv,65.4,60001,0.6677762367082756,0.9830809114476735,partly_drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_21_archive_corrected.csv,80,60001,0.07388883413816892,0.3524678111587983,drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_21_archive_corrected.csv,89.8,60001,-0.6406109613656784,0.33333333333333337,drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_22_archive_corrected.csv,-2.9,60000,-3.928629032258064,16.424650837988825,drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_22_archive_corrected.csv,31.7,60000,0.8762206798436087,2.021451064969138,nearly_undrained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_22_archive_corrected.csv,65.4,60000,0.508156132355317,0.7503652087419129,partly_drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_22_archive_corrected.csv,80,60000,0.6972099296000461,0.8055345768689485,partly_drained,observed regime inventory only; cv/source calibration not inferred
+usgs_flume_2016,2016_06_22_archive_corrected.csv,89.8,60000,0.09998486224644262,1.1476407914764077,drained,observed regime inventory only; cv/source calibration not inferred
