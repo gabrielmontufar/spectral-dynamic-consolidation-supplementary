@@ -4,9 +4,9 @@ spectral truncation,10 odd terms,0.001694899857485832,series truncation relative
 spectral truncation,20 odd terms,0.0002136078538522712,series truncation relative to 5000-term reference
 spectral truncation,50 odd terms,1.368522601397082e-05,series truncation relative to 5000-term reference
 spectral truncation,100 odd terms,1.7108978122015728e-06,series truncation relative to 5000-term reference
-finite difference,"40 interior nodes, 300 time steps",0.0027586755316731937,implicit time integration
-finite difference,"80 interior nodes, 600 time steps",0.000738321079590265,implicit time integration
+finite difference,"40 interior nodes, 300 time steps",0.0027586755316734157,implicit time integration
+finite difference,"80 interior nodes, 600 time steps",0.0007383210795904871,implicit time integration
 finite difference,"120 interior nodes, 800 time steps",0.0003490263381763503,implicit time integration
-finite element,"30 linear elements, 300 time steps",0.0017653445428530423,consistent-mass Galerkin solution
-finite element,"60 linear elements, 600 time steps",0.00047205922101956066,consistent-mass Galerkin solution
-finite element,"90 linear elements, 700 time steps",0.00025156300572998225,consistent-mass Galerkin solution
+finite element,"30 linear elements, 300 time steps",0.001765344542851821,consistent-mass Galerkin solution
+finite element,"60 linear elements, 600 time steps",0.00047205922101623,consistent-mass Galerkin solution
+finite element,"90 linear elements, 700 time steps",0.0002515630057968732,consistent-mass Galerkin solution

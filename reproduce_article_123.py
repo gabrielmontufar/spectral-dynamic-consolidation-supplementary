@@ -11,7 +11,6 @@ benchmark. It uses only numpy, pandas and matplotlib.
 from __future__ import annotations
 
 import math
-import shutil
 from pathlib import Path
 
 import matplotlib
@@ -27,7 +26,6 @@ from matplotlib.patches import Polygon, Rectangle
 
 OUT = Path(__file__).resolve().parent
 FIG_OUT = OUT / "generated_figures"
-SOURCE_FIG = OUT / "source_figures" / "figure_1_conceptual_slope.png"
 
 
 def spectral_retention(pi: np.ndarray | float, terms: int = 500) -> np.ndarray | float:
@@ -55,17 +53,33 @@ def solve_threshold(target: float) -> float:
     return 0.5 * (lo + hi)
 
 
+def solve_tridiagonal(lower: np.ndarray, diag: np.ndarray, upper: np.ndarray, rhs: np.ndarray) -> np.ndarray:
+    """Thomas algorithm for the repeated one-dimensional implicit solves."""
+    n = len(diag)
+    cp = upper.astype(float).copy()
+    dp = rhs.astype(float).copy()
+    bp = diag.astype(float).copy()
+    for i in range(1, n):
+        w = lower[i - 1] / bp[i - 1]
+        bp[i] -= w * cp[i - 1]
+        dp[i] -= w * dp[i - 1]
+    x = np.empty(n, dtype=float)
+    x[-1] = dp[-1] / bp[-1]
+    for i in range(n - 2, -1, -1):
+        x[i] = (dp[i] - cp[i] * x[i + 1]) / bp[i]
+    return x
+
+
 def fd_retention(pi: float, n: int = 120, steps: int = 800) -> float:
     dx = 1.0 / (n + 1)
     dt = pi / steps
     r = dt / dx**2
     main = np.full(n, 1.0 + 2.0 * r)
     off = np.full(n - 1, -r)
-    a = np.diag(main) + np.diag(off, 1) + np.diag(off, -1)
     u = np.zeros(n)
     rhs_add = np.full(n, dt)
     for _ in range(steps):
-        u = np.linalg.solve(a, u + rhs_add)
+        u = solve_tridiagonal(off, main, off, u + rhs_add)
     return float(dx * np.sum(u) / pi)
 
 
@@ -77,13 +91,15 @@ def fem_retention(pi: float, elements: int = 90, steps: int = 700) -> float:
     m_off = np.full(n - 1, h / 6.0)
     k_main = np.full(n, 2.0 / h)
     k_off = np.full(n - 1, -1.0 / h)
-    mass = np.diag(m_main) + np.diag(m_off, 1) + np.diag(m_off, -1)
-    stiff = np.diag(k_main) + np.diag(k_off, 1) + np.diag(k_off, -1)
     load = np.full(n, h)
-    lhs = mass + dt * stiff
+    lhs_main = m_main + dt * k_main
+    lhs_off = m_off + dt * k_off
     u = np.zeros(n)
     for _ in range(steps):
-        u = np.linalg.solve(lhs, mass @ u + dt * load)
+        rhs = m_main * u + dt * load
+        rhs[:-1] += m_off * u[1:]
+        rhs[1:] += m_off * u[:-1]
+        u = solve_tridiagonal(lhs_off, lhs_main, lhs_off, rhs)
     return float((load @ u) / pi)
 
 
@@ -259,7 +275,7 @@ def save_csv(data: dict[str, pd.DataFrame]) -> None:
 def make_figures(data: dict[str, pd.DataFrame]) -> None:
     FIG_OUT.mkdir(exist_ok=True)
 
-    fig, ax = plt.subplots(figsize=(8.9, 5.0), dpi=220, constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(8.9, 5.0), dpi=600, constrained_layout=True)
     slope = Polygon(
         [[0.35, 0.70], [8.45, 0.70], [8.45, 3.15], [0.35, 1.25]],
         closed=True,
@@ -283,12 +299,11 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     ax.set_ylim(0, 4.8)
     ax.axis("off")
     fig.savefig(FIG_OUT / "figure_1_conceptual_slope.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "Fig1.tif", bbox_inches="tight", facecolor="white")
     plt.close(fig)
-    if SOURCE_FIG.exists():
-        shutil.copy2(SOURCE_FIG, FIG_OUT / "figure_1_conceptual_slope.png")
 
     curve = data["retention_curve"]
-    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=220, constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
     ax.semilogx(curve["Pi"], curve["R_Pi"], color="#084081", lw=2)
     for target in [0.9, 0.5, 0.1]:
         pi = float(data["thresholds"].loc[data["thresholds"]["Criterion"] == f"R(Pi)={target}", "Pi"].iloc[0])
@@ -299,10 +314,11 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     ax.set_ylabel("Retained pore-pressure fraction, R(Pi)")
     ax.grid(True, which="both", alpha=0.25)
     fig.savefig(FIG_OUT / "figure_2_retention_curve.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "Fig2.tif", bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
     validation = data["validation_fd_fem"]
-    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=220, constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
     ax.loglog(validation["Pi"], validation["FD_abs_error"], "o-", label="implicit finite differences")
     ax.loglog(validation["Pi"], validation["FEM_abs_error"], "s-", label="linear FEM")
     ax.set_xlabel("Pi")
@@ -310,13 +326,14 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     ax.grid(True, which="both", alpha=0.25)
     ax.legend(frameon=False)
     fig.savefig(FIG_OUT / "figure_3_numerical_validation_errors.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "Fig3.tif", bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
     pi = np.logspace(-4, 2, 300)
     r = spectral_retention(pi)
     sigma0, pu, phi, tau = 50.0, 20.0, math.radians(30.0), 25.0
     fs = (sigma0 - pu * r) * math.tan(phi) / tau
-    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=220, constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
     ax.semilogx(pi, fs, color="#238b45", lw=2)
     ax.axhline(1.0, color="black", ls="--", lw=0.9)
     ax.text(1.8e-4, 1.015, "FS = 1", fontsize=9)
@@ -324,13 +341,14 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     ax.set_ylabel("Partly drained factor of safety")
     ax.grid(True, which="both", alpha=0.25)
     fig.savefig(FIG_OUT / "figure_4_stability_shift.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "Fig4.tif", bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
     h_vals = np.logspace(-2, -0.3, 240)
     t_vals = np.logspace(0, 3, 240)
     h_grid, t_grid = np.meshgrid(h_vals, t_vals)
     r_grid = spectral_retention(5e-6 * t_grid / h_grid**2)
-    fig, ax = plt.subplots(figsize=(7.2, 5.2), dpi=220, constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(7.2, 5.2), dpi=600, constrained_layout=True)
     ax.contourf(h_grid, t_grid, r_grid, levels=[0, 0.1, 0.9, 1.01], colors=["#d9f0d3", "#fff7bc", "#fdd49e"], alpha=0.95)
     ax.contour(h_grid, t_grid, r_grid, levels=[0.1, 0.5, 0.9], colors="black", linewidths=[1.0, 1.3, 1.0], linestyles=["solid", "dashed", "dashdot"])
     ax.set_xscale("log")
@@ -348,19 +366,21 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=3, frameon=True, edgecolor="black", title="Retention contours")
     ax.set_title("Regime map for cv = 5e-6 m2/s")
     fig.savefig(FIG_OUT / "figure_5_regime_map.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "Fig5.tif", bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
     sens = data["sensitivity"].copy()
     sens["abs"] = sens["Normalized sensitivity of FS_PD"].abs()
     sens = sens.sort_values("abs", ascending=True)
     colors = ["#b2182b" if v < 0 else "#2166ac" for v in sens["Normalized sensitivity of FS_PD"]]
-    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=220, constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
     ax.barh(sens["Parameter"], sens["Normalized sensitivity of FS_PD"], color=colors)
     ax.axvline(0, color="black", lw=0.9)
     ax.set_xlabel("Normalized log-sensitivity of partly drained FS")
     ax.set_ylabel("Parameter")
     ax.grid(axis="x", alpha=0.25)
     fig.savefig(FIG_OUT / "figure_6_sensitivity.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "Fig6.tif", bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
 

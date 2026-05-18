@@ -14,7 +14,7 @@ Python 3 with:
 
 The script does not require SciPy.
 
-Figure 1 is an editorial schematic supplied as `source_figures/figure_1_conceptual_slope.png`; the script copies that file unchanged into `generated_figures/` so the submitted figure is preserved exactly. The remaining numerical figures are generated from the calculations.
+The script generates all six figures from code. Figure 1 is a technical schematic drawn with Matplotlib patches and annotations; it does not rely on external or generative-AI image files. High-resolution TIFF versions named `Fig1.tif` through `Fig6.tif` are generated for journal production, while PNG copies are kept for review and repository viewing.
 
 ## Reproduction
 
@@ -37,6 +37,7 @@ The script writes CSV files in the same folder and writes regenerated figures to
 - `sensitivity.csv`: normalized sensitivity of the partly drained factor of safety.
 - `thresholds.csv`: retained-pressure regime boundaries.
 - `reproduce_article_123.py`: script for regenerating the numerical data and figures.
-- `source_figures/figure_1_conceptual_slope.png`: supplied schematic used unchanged for Figure 1.
+- `requirements.txt`: minimal Python package list.
+- `generated_figures/`: regenerated figures used for manuscript review and journal production.
 
 The data are synthetic and are intended to support reproducibility of the mathematical benchmark. They are not field measurements.
