@@ -42,11 +42,87 @@ def spectral_retention(pi: np.ndarray | float, terms: int = 500) -> np.ndarray |
     return float(out) if np.isscalar(pi) else out
 
 
+def single_drainage_retention(pi: np.ndarray | float, terms: int = 500) -> np.ndarray | float:
+    """Mean retained pressure fraction for one drained and one impermeable boundary."""
+    pi_arr = np.asarray(pi, dtype=float)
+    out = np.zeros_like(pi_arr, dtype=float)
+    n = np.arange(terms, dtype=float)
+    alpha = (n + 0.5) * math.pi
+    for idx, value in np.ndenumerate(pi_arr):
+        out[idx] = np.sum(2.0 * (1.0 - np.exp(-(alpha**2) * value)) / (alpha**4 * value))
+    return float(out) if np.isscalar(pi) else out
+
+
+def source_shape_weights(shape: str, s: np.ndarray) -> np.ndarray:
+    """Normalized pressure-generation histories over 0 <= s <= 1."""
+    if shape == "constant":
+        return np.ones_like(s)
+    if shape == "front_loaded":
+        return 2.0 * (1.0 - s)
+    if shape == "back_loaded":
+        return 2.0 * s
+    if shape == "middle_pulse":
+        return 6.0 * s * (1.0 - s)
+    raise ValueError(f"Unknown source shape: {shape}")
+
+
+def temporal_source_retention(
+    pi: np.ndarray | float,
+    shape: str,
+    boundary: str = "double",
+    terms: int = 500,
+    quadrature_points: int = 400,
+) -> np.ndarray | float:
+    """Retained fraction for a normalized temporal source history.
+
+    The pressure-generation history is q(t)=Pu/T*g(t/T), where integral_0^1
+    g(s) ds = 1. The constant-source case reproduces spectral_retention.
+    """
+    pi_arr = np.asarray(pi, dtype=float)
+    out = np.zeros_like(pi_arr, dtype=float)
+    s = np.linspace(0.0, 1.0, quadrature_points)
+    g = source_shape_weights(shape, s)
+    if boundary == "double":
+        m = np.arange(1, 2 * terms, 2, dtype=float)
+        alpha = m * math.pi
+        modal_weight = 8.0 / (alpha**2)
+    elif boundary == "single":
+        n = np.arange(terms, dtype=float)
+        alpha = (n + 0.5) * math.pi
+        modal_weight = 2.0 / (alpha**2)
+    else:
+        raise ValueError(f"Unknown boundary: {boundary}")
+    for idx, value in np.ndenumerate(pi_arr):
+        kernel = np.exp(-np.outer(alpha**2 * value, 1.0 - s))
+        modal_integral = np.trapezoid(kernel * g, s, axis=1)
+        out[idx] = np.sum(modal_weight * modal_integral)
+    return float(out) if np.isscalar(pi) else out
+
+
+def spectral_tail_bound(pi: float, retained_terms: int, max_terms: int = 200000) -> float:
+    """Upper bound for the positive tail after retained odd modes."""
+    start = 2 * retained_terms + 1
+    m = np.arange(start, 2 * max_terms, 2, dtype=float)
+    term_bound = np.minimum(8.0 / (math.pi**2 * m**2), 8.0 / (math.pi**4 * pi * m**4))
+    return float(np.sum(term_bound))
+
+
 def solve_threshold(target: float) -> float:
     lo, hi = 1e-6, 100.0
     for _ in range(90):
         mid = 0.5 * (lo + hi)
         if spectral_retention(mid) > target:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+
+def solve_threshold_model(target: float, model) -> float:
+    lo, hi = 1e-6, 100.0
+    for _ in range(90):
+        mid = 0.5 * (lo + hi)
+        if model(mid) > target:
             lo = mid
         else:
             hi = mid
@@ -113,6 +189,10 @@ def regime_from_r(r_value: float) -> str:
 
 def build_data() -> dict[str, pd.DataFrame]:
     thresholds = {target: solve_threshold(target) for target in [0.9, 0.5, 0.1]}
+    single_thresholds = {
+        target: solve_threshold_model(target, single_drainage_retention)
+        for target in [0.9, 0.5, 0.1]
+    }
 
     pi_curve = np.logspace(-4, 2, 360)
     retention_curve = pd.DataFrame(
@@ -255,6 +335,58 @@ def build_data() -> dict[str, pd.DataFrame]:
         columns=["Boundary", "Criterion", "Pi"],
     )
 
+    boundary_condition_rows = []
+    for target in [0.9, 0.5, 0.1]:
+        dd = thresholds[target]
+        sd = single_thresholds[target]
+        boundary_condition_rows.append(
+            {
+                "Retained fraction boundary": f"R(Pi)={target}",
+                "Pi_double_drainage": dd,
+                "Pi_single_drainage": sd,
+                "single_to_double_ratio": sd / dd,
+                "Interpretation": "single drainage requires larger hydraulic time to dissipate the same fraction",
+            }
+        )
+    boundary_conditions = pd.DataFrame(boundary_condition_rows)
+
+    source_pi = np.array([0.004418, 0.02, 0.1126, 0.5, 0.8331, 2.4])
+    temporal_rows = []
+    for boundary in ["double", "single"]:
+        for shape in ["front_loaded", "constant", "middle_pulse", "back_loaded"]:
+            values = temporal_source_retention(source_pi, shape, boundary=boundary, terms=400)
+            for pi_value, retained in zip(source_pi, values):
+                temporal_rows.append(
+                    {
+                        "boundary_condition": boundary,
+                        "source_shape": shape,
+                        "Pi": pi_value,
+                        "R_shape": retained,
+                        "R_constant_double": spectral_retention(pi_value),
+                    }
+                )
+    temporal_source = pd.DataFrame(temporal_rows)
+
+    truncation_rows = []
+    bound_pi = np.array([thresholds[0.9], thresholds[0.5], thresholds[0.1], 2.4])
+    reference_terms = 5000
+    for retained_terms in [5, 10, 20, 50, 100]:
+        for pi_value in bound_pi:
+            approx = spectral_retention(pi_value, terms=retained_terms)
+            reference = spectral_retention(pi_value, terms=reference_terms)
+            actual_error = abs(reference - approx)
+            truncation_rows.append(
+                {
+                    "Pi": pi_value,
+                    "retained_odd_terms": retained_terms,
+                    "actual_error_vs_5000_terms": actual_error,
+                    "positive_tail_bound": spectral_tail_bound(pi_value, retained_terms),
+                    "bound_to_actual_ratio": spectral_tail_bound(pi_value, retained_terms) / actual_error if actual_error > 0 else np.nan,
+                    "monotonicity_basis": "each positive modal term decreases with Pi; thresholds are unique",
+                }
+            )
+    truncation_bounds = pd.DataFrame(truncation_rows)
+
     return {
         "retention_curve": retention_curve,
         "validation_fd_fem": validation,
@@ -264,6 +396,9 @@ def build_data() -> dict[str, pd.DataFrame]:
         "external_consistency_check": external,
         "sensitivity": sensitivity,
         "thresholds": thresholds_df,
+        "boundary_condition_comparison": boundary_conditions,
+        "temporal_source_retention": temporal_source,
+        "truncation_bound_check": truncation_bounds,
     }
 
 
@@ -381,6 +516,53 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     ax.grid(axis="x", alpha=0.25)
     fig.savefig(FIG_OUT / "figure_6_sensitivity.png", bbox_inches="tight", facecolor="white")
     fig.savefig(FIG_OUT / "Fig6.tif", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+
+    pi_curve = np.logspace(-4, 2, 260)
+    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
+    ax.semilogx(pi_curve, spectral_retention(pi_curve), label="double drainage", color="#084081", lw=2.0)
+    ax.semilogx(pi_curve, single_drainage_retention(pi_curve), label="single drainage", color="#b2182b", lw=2.0)
+    ax.axhline(0.5, color="0.35", ls="--", lw=0.9)
+    ax.set_xlabel("Dynamic consolidation number, Pi = cvT/h^2")
+    ax.set_ylabel("Retained pore-pressure fraction, R(Pi)")
+    ax.grid(True, which="both", alpha=0.25)
+    ax.legend(frameon=False)
+    fig.savefig(FIG_OUT / "figure_7_boundary_condition_comparison.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "Fig7.tif", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+
+    source = data["temporal_source_retention"]
+    subset = source[(source["boundary_condition"] == "double") & (source["Pi"].isin([0.1126, 0.8331]))]
+    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
+    labels = {"front_loaded": "front loaded", "constant": "constant", "middle_pulse": "middle pulse", "back_loaded": "back loaded"}
+    for pi_value, group in subset.groupby("Pi"):
+        ordered = group.set_index("source_shape").loc[["front_loaded", "constant", "middle_pulse", "back_loaded"]]
+        ax.plot(
+            [labels[v] for v in ordered.index],
+            ordered["R_shape"],
+            marker="o",
+            label=f"Pi={pi_value:g}",
+        )
+    ax.set_ylabel("Retained fraction at event end")
+    ax.set_xlabel("Normalized pressure-generation history")
+    ax.grid(axis="y", alpha=0.25)
+    ax.legend(frameon=False)
+    fig.savefig(FIG_OUT / "figure_8_temporal_source_retention.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "Fig8.tif", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+
+    bounds = data["truncation_bound_check"].copy()
+    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
+    for pi_value, group in bounds.groupby("Pi"):
+        label = f"Pi={pi_value:.4g}"
+        ax.loglog(group["retained_odd_terms"], group["actual_error_vs_5000_terms"], "o-", label=label)
+        ax.loglog(group["retained_odd_terms"], group["positive_tail_bound"], "--", color=ax.lines[-1].get_color(), alpha=0.65)
+    ax.set_xlabel("Retained odd terms")
+    ax.set_ylabel("Absolute truncation error / positive tail bound")
+    ax.grid(True, which="both", alpha=0.25)
+    ax.legend(frameon=False, fontsize=8)
+    fig.savefig(FIG_OUT / "figure_9_truncation_bound_check.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "Fig9.tif", bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
 
