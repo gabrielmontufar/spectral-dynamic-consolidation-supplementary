@@ -251,7 +251,15 @@ def main() -> None:
             ax.plot(frame["time_s"], frame["retained_predicted"], color=color, lw=1.8, label=f"{model} fit")
         ax.set_xlabel("Time since start of consolidation (s)")
         ax.set_ylabel("Normalized retained pore pressure")
-        ax.set_title(best_file)
+        ax.text(
+            0.02,
+            0.96,
+            "Representative held-out Oso record",
+            transform=ax.transAxes,
+            va="top",
+            ha="left",
+            fontsize=9,
+        )
         ax.grid(alpha=0.25)
         ax.legend(frameon=False)
         fig.savefig(FIG_OUT / "figure_11_oso_consistency_example.png", bbox_inches="tight", facecolor="white")

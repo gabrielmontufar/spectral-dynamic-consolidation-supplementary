@@ -387,6 +387,53 @@ def build_data() -> dict[str, pd.DataFrame]:
             )
     truncation_bounds = pd.DataFrame(truncation_rows)
 
+    claim_passport = pd.DataFrame(
+        [
+            [
+                "Closed-form retained-pressure operator",
+                "R(Pi) is computed from a positive modal series and checked against finite-difference and finite-element solutions.",
+                "Applies to the stated one-dimensional saturated shear-band, boundary-condition and source assumptions.",
+                "A coupled or monitored case with nonuniform source, anisotropy or three-dimensional drainage should be analysed with a site-specific model.",
+                "Escalate to coupled hydro-mechanical analysis rather than treating R(Pi) as a universal constitutive law.",
+            ],
+            [
+                "Continuous drainage-regime classification",
+                "Thresholds R(Pi)=0.9, 0.5 and 0.1 are computed from the same operator and audited with truncation-error bounds.",
+                "Use as a screening boundary between nearly undrained, partly drained and drained response.",
+                "Do not use the thresholds as calibrated field limits without independent hydraulic and geometric data.",
+                "Report h, cv, T, boundary condition and source history whenever the classification is used.",
+            ],
+            [
+                "Partly drained stability diagnostic",
+                "The retained pressure is inserted into an effective-stress factor of safety for synthetic infrastructure-slope cases.",
+                "Supports transparent comparison of drainage assumptions in screening inventories.",
+                "Does not replace site-specific strength selection, progressive-failure analysis or calibrated pore-pressure modelling.",
+                "Use the diagnostic as a pre-analysis check before full design calculations.",
+            ],
+            [
+                "External pressure-dissipation consistency",
+                "Oso ring-shear records, Mount Kaba-san pore-pressure records and flume observations are treated as bounded consistency checks.",
+                "Supports plausibility of the pressure-dissipation component, not field-scale landslide prediction.",
+                "A field validation claim would require observed geometry, hydraulic properties, pore-pressure forcing and slope response for the same event.",
+                "Label these outputs as consistency checks unless a full field calibration is added.",
+            ],
+        ],
+        columns=["Claim", "Evidence provided", "Allowed scope", "Main falsifier or limitation", "Required escalation"],
+    )
+
+    evidence_hierarchy = pd.DataFrame(
+        [
+            ["Analytical limits", "Pi -> 0 and Pi -> infinity", "Operator tends to undrained and drained limits.", "Theory check"],
+            ["Numerical verification", "FD and FEM benchmarks", "Independent discretisations reproduce the spectral operator.", "Verification"],
+            ["Convergence audit", "Modal truncation, grid refinement and tail bounds", "Thresholds are numerically stable and unique.", "Verification"],
+            ["Synthetic benchmark", "Five infrastructure-slope cases", "Shows how h, cv and T change retained pressure and FS_PD.", "Controlled demonstration"],
+            ["Global sensitivity", "Latin-hypercube and PRCC checks", "Separates hydraulic controls of Pi from mechanical controls of FS_PD.", "Robustness check"],
+            ["External records", "Oso, Mount Kaba-san and flume public datasets", "Pressure-dissipation behaviour is directionally compatible with bounded observations.", "Consistency check"],
+            ["Field-scale calibration", "Not claimed in this package", "Requires geometry, hydraulic properties and observed slope response for the same event.", "Future validation"],
+        ],
+        columns=["Evidence tier", "Material used", "What it supports", "Evidence type"],
+    )
+
     return {
         "retention_curve": retention_curve,
         "verification_fd_fem": verification,
@@ -399,6 +446,8 @@ def build_data() -> dict[str, pd.DataFrame]:
         "boundary_condition_comparison": boundary_conditions,
         "temporal_source_retention": temporal_source,
         "truncation_bound_check": truncation_bounds,
+        "claim_passport": claim_passport,
+        "evidence_hierarchy": evidence_hierarchy,
     }
 
 
@@ -410,28 +459,71 @@ def save_csv(data: dict[str, pd.DataFrame]) -> None:
 def make_figures(data: dict[str, pd.DataFrame]) -> None:
     FIG_OUT.mkdir(exist_ok=True)
 
-    fig, ax = plt.subplots(figsize=(8.9, 5.0), dpi=600, constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(8.9, 4.35), dpi=600, constrained_layout=True)
+    ground_surface = np.array([[0.35, 1.25], [8.45, 3.05]])
     slope = Polygon(
-        [[0.35, 0.70], [8.45, 0.70], [8.45, 3.15], [0.35, 1.25]],
+        [[0.35, 0.70], [8.45, 0.70], ground_surface[1], ground_surface[0]],
         closed=True,
-        facecolor="#ddd2bd",
-        edgecolor="black",
-        lw=1.2,
+        facecolor="#e6ddca",
+        edgecolor="#2f2f2f",
+        lw=1.1,
     )
     ax.add_patch(slope)
-    ax.plot([1.10, 7.90], [1.55, 3.08], color="#0b79bd", lw=5.0, solid_capstyle="butt")
-    ax.plot([1.10, 8.45], [1.55, 3.15], color="#666666", lw=2.4, solid_capstyle="butt")
-    ax.add_patch(Rectangle((6.20, 3.60), 1.90, 0.16, facecolor="white", edgecolor="black", lw=1.2))
-    ax.add_patch(Rectangle((6.20, 3.76), 1.90, 0.16, facecolor="white", edgecolor="black", lw=1.2))
-    ax.plot([6.20, 8.10], [3.72, 3.72], color="black", lw=4.0, solid_capstyle="butt")
-    ax.annotate("upslope drained\nboundary", xy=(1.15, 1.58), xytext=(0.75, 3.70), ha="center", arrowprops=dict(arrowstyle="->", lw=1.3))
-    ax.annotate("rapid loading\nduration T", xy=(5.02, 2.60), xytext=(4.18, 4.28), ha="center", arrowprops=dict(arrowstyle="->", lw=1.3))
-    ax.annotate("road / civil corridor", xy=(7.15, 3.92), xytext=(7.15, 4.55), ha="center", arrowprops=dict(arrowstyle="->", lw=1.3))
-    ax.annotate("", xy=(3.55, 2.18), xytext=(3.42, 1.84), arrowprops=dict(arrowstyle="<->", lw=1.3))
-    ax.text(3.24, 2.38, "saturated shear band\nthickness h", ha="center", va="bottom")
-    ax.text(4.45, 0.30, r"Output: retained pore pressure R($\Pi$)P$_u$ and partly drained stability", ha="center")
+    ax.plot(ground_surface[:, 0], ground_surface[:, 1], color="#111111", lw=1.4, solid_capstyle="butt")
+    surface_tangent = ground_surface[1] - ground_surface[0]
+    tangent = surface_tangent / np.linalg.norm(surface_tangent)
+    normal_up = np.array([-tangent[1], tangent[0]])
+    normal_down = -normal_up
+    cover_thickness = 0.16
+    band_upper = np.array([ground_surface[0] + tangent * 0.62 + normal_down * cover_thickness,
+                           ground_surface[1] - tangent * 0.62 + normal_down * cover_thickness])
+    tangent = tangent / np.linalg.norm(tangent)
+    band_thickness = 0.14
+    band_lower = band_upper + normal_down * band_thickness
+    shear_band = Polygon(
+        [band_lower[0], band_lower[1], band_upper[1], band_upper[0]],
+        closed=True,
+        facecolor="#dbeef7",
+        edgecolor="#2f5f7f",
+        lw=1.1,
+        hatch="///",
+        alpha=0.95,
+    )
+    ax.add_patch(shear_band)
+    ax.plot(band_lower[:, 0], band_lower[:, 1], color="#2f2f2f", lw=0.9, solid_capstyle="butt")
+    ax.plot(band_upper[:, 0], band_upper[:, 1], color="#2f2f2f", lw=0.9, solid_capstyle="butt")
+    ax.add_patch(Rectangle((6.35, 3.72), 1.75, 0.14, facecolor="white", edgecolor="#222222", lw=0.9))
+    ax.add_patch(Rectangle((6.35, 3.86), 1.75, 0.14, facecolor="white", edgecolor="#222222", lw=0.9))
+    ax.plot([6.35, 8.10], [3.83, 3.83], color="#222222", lw=1.6, solid_capstyle="butt")
+    arrow = dict(arrowstyle="->", lw=0.75, mutation_scale=8, shrinkA=1, shrinkB=1, color="#1f1f1f")
+    ax.annotate("upper drained\nboundary", xy=band_upper[0] + tangent * 0.35, xytext=(1.45, 2.45), ha="center", fontsize=9.5, arrowprops=arrow)
+    ax.annotate("lower drained\nboundary", xy=band_lower[0] + tangent * 0.55, xytext=(1.02, 0.34), ha="center", fontsize=9.5, arrowprops=arrow)
+    load_x = 5.25
+    y_surface = ground_surface[0, 1] + (ground_surface[1, 1] - ground_surface[0, 1]) * ((load_x - ground_surface[0, 0]) / (ground_surface[1, 0] - ground_surface[0, 0]))
+    ax.annotate("loading interval\n$T$", xy=(load_x, y_surface + 0.04), xytext=(load_x, y_surface + 0.78), ha="center", fontsize=9.5, arrowprops=arrow)
+    ax.annotate("road / civil corridor", xy=(7.22, 4.00), xytext=(7.22, 4.50), ha="center", fontsize=9.5, arrowprops=arrow)
+    band_mid = (band_lower[0] + band_upper[0]) / 2 + tangent * 3.20
+    ax.annotate("saturated\nshear band", xy=band_mid, xytext=(3.95, 2.38), ha="center", fontsize=9.0, arrowprops=arrow)
+
+    # Local cross-section inset: h is a normal distance between the two drainage boundaries.
+    inset_x, inset_y, inset_w, inset_h = 1.45, 3.76, 2.45, 0.72
+    ax.add_patch(Rectangle((inset_x, inset_y), inset_w, inset_h, facecolor="#fbfbf8", edgecolor="0.35", lw=0.75))
+    ax.text(inset_x + inset_w / 2, inset_y + inset_h - 0.10, "normal section", ha="center", va="top", fontsize=8.5)
+    y_low, y_up = inset_y + 0.18, inset_y + 0.42
+    x0, x1 = inset_x + 0.44, inset_x + inset_w - 0.46
+    ax.add_patch(Rectangle((x0, y_low), x1 - x0, y_up - y_low, facecolor="#dbeef7", edgecolor="#2f5f7f", hatch="///", lw=0.7, alpha=0.95))
+    dim_x = x1 + 0.12
+    ax.plot([dim_x - 0.055, dim_x + 0.055], [y_low, y_low], color="black", lw=0.75)
+    ax.plot([dim_x - 0.055, dim_x + 0.055], [y_up, y_up], color="black", lw=0.75)
+    ax.annotate("", xy=(dim_x, y_up), xytext=(dim_x, y_low), arrowprops=dict(arrowstyle="<->", lw=0.8, mutation_scale=9, shrinkA=0, shrinkB=0))
+    ax.text(x1 + 0.23, (y_low + y_up) / 2, "$h$", ha="left", va="center", fontsize=9.5)
+    ax.text(x0 - 0.08, y_up, "upper", ha="right", va="center", fontsize=7.5)
+    ax.text(x0 - 0.08, y_low, "lower", ha="right", va="center", fontsize=7.5)
+
+    ax.annotate(r"$u_r = R(\Pi)P_u$", xy=band_upper[0] + tangent * 5.1, xytext=(5.95, 1.34), ha="center", fontsize=9.5, arrowprops=arrow)
+    ax.text(6.95, 1.00, r"$F_{S,PD}$ from retained pressure", ha="center", fontsize=9.5)
     ax.set_xlim(0, 8.9)
-    ax.set_ylim(0, 4.8)
+    ax.set_ylim(-0.18, 4.45)
     ax.axis("off")
     fig.savefig(FIG_OUT / "figure_1_conceptual_slope.png", bbox_inches="tight", facecolor="white")
     fig.savefig(FIG_OUT / "Fig1.tif", bbox_inches="tight", facecolor="white")
@@ -444,9 +536,9 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
         pi = float(data["thresholds"].loc[data["thresholds"]["Criterion"] == f"R(Pi)={target}", "Pi"].iloc[0])
         ax.axhline(target, color="0.35", ls="--", lw=0.8)
         ax.axvline(pi, color="#d7301f", ls=":", lw=1.0)
-        ax.text(pi * 1.08, target + 0.025, f"R={target}, Pi={pi:.4g}", fontsize=8)
-    ax.set_xlabel("Dynamic consolidation number, Pi = cvT/h^2")
-    ax.set_ylabel("Retained pore-pressure fraction, R(Pi)")
+        ax.text(pi * 1.08, target + 0.025, rf"$R={target}$, $\Pi={pi:.4g}$", fontsize=8)
+    ax.set_xlabel(r"Dynamic consolidation number, $\Pi = c_vT/h^2$")
+    ax.set_ylabel(r"Retained pore-pressure fraction, $R(\Pi)$")
     ax.grid(True, which="both", alpha=0.25)
     fig.savefig(FIG_OUT / "figure_2_retention_curve.png", bbox_inches="tight", facecolor="white")
     fig.savefig(FIG_OUT / "Fig2.tif", bbox_inches="tight", facecolor="white")
@@ -456,8 +548,8 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
     ax.loglog(verification["Pi"], verification["FD_abs_error"], "o-", label="implicit finite differences")
     ax.loglog(verification["Pi"], verification["FEM_abs_error"], "s-", label="linear FEM")
-    ax.set_xlabel("Pi")
-    ax.set_ylabel("Absolute error in R(Pi)")
+    ax.set_xlabel(r"$\Pi$")
+    ax.set_ylabel(r"Absolute error in $R(\Pi)$")
     ax.grid(True, which="both", alpha=0.25)
     ax.legend(frameon=False)
     fig.savefig(FIG_OUT / "figure_3_numerical_verification_errors.png", bbox_inches="tight", facecolor="white")
@@ -471,8 +563,8 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
     ax.semilogx(pi, fs, color="#238b45", lw=2)
     ax.axhline(1.0, color="black", ls="--", lw=0.9)
-    ax.text(1.8e-4, 1.015, "FS = 1", fontsize=9)
-    ax.set_xlabel("Pi")
+    ax.text(1.8e-4, 1.015, r"$FS = 1$", fontsize=9)
+    ax.set_xlabel(r"$\Pi$")
     ax.set_ylabel("Partly drained factor of safety")
     ax.grid(True, which="both", alpha=0.25)
     fig.savefig(FIG_OUT / "figure_4_stability_shift.png", bbox_inches="tight", facecolor="white")
@@ -488,18 +580,18 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     ax.contour(h_grid, t_grid, r_grid, levels=[0.1, 0.5, 0.9], colors="black", linewidths=[1.0, 1.3, 1.0], linestyles=["solid", "dashed", "dashdot"])
     ax.set_xscale("log")
     ax.set_yscale("log")
-    ax.set_xlabel("Shear-band thickness h (m)")
-    ax.set_ylabel("Rapid-loading duration T (s)")
+    ax.set_xlabel(r"Shear-band thickness $h$ (m)")
+    ax.set_ylabel(r"Rapid-loading duration $T$ (s)")
     ax.text(0.012, 750, "drained", fontsize=10)
     ax.text(0.052, 24, "partly drained", fontsize=10)
     ax.text(0.18, 2.2, "nearly undrained", fontsize=10)
     handles = [
-        Line2D([0], [0], color="black", lw=1.0, linestyle="solid", label="R=0.1"),
-        Line2D([0], [0], color="black", lw=1.3, linestyle="dashed", label="R=0.5"),
-        Line2D([0], [0], color="black", lw=1.0, linestyle="dashdot", label="R=0.9"),
+        Line2D([0], [0], color="black", lw=1.0, linestyle="solid", label=r"$R=0.1$"),
+        Line2D([0], [0], color="black", lw=1.3, linestyle="dashed", label=r"$R=0.5$"),
+        Line2D([0], [0], color="black", lw=1.0, linestyle="dashdot", label=r"$R=0.9$"),
     ]
     ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=3, frameon=True, edgecolor="black", title="Retention contours")
-    ax.set_title("Regime map for cv = 5e-6 m2/s")
+    ax.set_title(r"Regime map for $c_v = 5 \times 10^{-6}$ m$^2$/s")
     fig.savefig(FIG_OUT / "figure_5_regime_map.png", bbox_inches="tight", facecolor="white")
     fig.savefig(FIG_OUT / "Fig5.tif", bbox_inches="tight", facecolor="white")
     plt.close(fig)
@@ -507,11 +599,24 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     sens = data["sensitivity"].copy()
     sens["abs"] = sens["Normalized sensitivity of FS_PD"].abs()
     sens = sens.sort_values("abs", ascending=True)
+    parameter_labels = {
+        "tau": r"$\tau$",
+        "Pu": r"$P_u$",
+        "Pu_kPa": r"$P_u$",
+        "h": r"$h$",
+        "h_m": r"$h$",
+        "T_s": r"$T$",
+        "cv": r"$c_v$",
+        "cv_m2_s": r"$c_v$",
+        "phi_deg": r"$\phi'$",
+        "sigma_eff0": r"$\sigma'_{n0}$",
+    }
+    sens["Parameter label"] = sens["Parameter"].map(parameter_labels).fillna(sens["Parameter"])
     colors = ["#b2182b" if v < 0 else "#2166ac" for v in sens["Normalized sensitivity of FS_PD"]]
     fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
-    ax.barh(sens["Parameter"], sens["Normalized sensitivity of FS_PD"], color=colors)
+    ax.barh(sens["Parameter label"], sens["Normalized sensitivity of FS_PD"], color=colors)
     ax.axvline(0, color="black", lw=0.9)
-    ax.set_xlabel("Normalized log-sensitivity of partly drained FS")
+    ax.set_xlabel(r"Normalized log-sensitivity of partly drained $FS$")
     ax.set_ylabel("Parameter")
     ax.grid(axis="x", alpha=0.25)
     fig.savefig(FIG_OUT / "figure_6_sensitivity.png", bbox_inches="tight", facecolor="white")
@@ -523,8 +628,8 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     ax.semilogx(pi_curve, spectral_retention(pi_curve), label="double drainage", color="#084081", lw=2.0)
     ax.semilogx(pi_curve, single_drainage_retention(pi_curve), label="single drainage", color="#b2182b", lw=2.0)
     ax.axhline(0.5, color="0.35", ls="--", lw=0.9)
-    ax.set_xlabel("Dynamic consolidation number, Pi = cvT/h^2")
-    ax.set_ylabel("Retained pore-pressure fraction, R(Pi)")
+    ax.set_xlabel(r"Dynamic consolidation number, $\Pi = c_vT/h^2$")
+    ax.set_ylabel(r"Retained pore-pressure fraction, $R(\Pi)$")
     ax.grid(True, which="both", alpha=0.25)
     ax.legend(frameon=False)
     fig.savefig(FIG_OUT / "figure_7_boundary_condition_comparison.png", bbox_inches="tight", facecolor="white")
@@ -541,7 +646,7 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
             [labels[v] for v in ordered.index],
             ordered["R_shape"],
             marker="o",
-            label=f"Pi={pi_value:g}",
+            label=rf"$\Pi={pi_value:g}$",
         )
     ax.set_ylabel("Retained fraction at event end")
     ax.set_xlabel("Normalized pressure-generation history")
@@ -554,7 +659,7 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     bounds = data["truncation_bound_check"].copy()
     fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
     for pi_value, group in bounds.groupby("Pi"):
-        label = f"Pi={pi_value:.4g}"
+        label = rf"$\Pi={pi_value:.4g}$"
         ax.loglog(group["retained_odd_terms"], group["actual_error_vs_5000_terms"], "o-", label=label)
         ax.loglog(group["retained_odd_terms"], group["positive_tail_bound"], "--", color=ax.lines[-1].get_color(), alpha=0.65)
     ax.set_xlabel("Retained odd terms")

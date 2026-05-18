@@ -8,9 +8,9 @@ This package contains synthetic benchmark data and reproducible Python scripts u
 
 Python 3 with:
 
-- numpy
-- pandas
-- matplotlib
+- numpy 2.4.4
+- pandas 3.0.3
+- matplotlib 3.10.9
 
 The script does not require SciPy.
 
@@ -43,6 +43,8 @@ The first script writes the synthetic benchmark CSV files in the same folder and
 - `boundary_condition_comparison.csv`: double-drainage versus single-drainage retained-pressure thresholds.
 - `temporal_source_retention.csv`: retained fractions for front-loaded, constant, middle-pulse and back-loaded pressure-generation histories.
 - `truncation_bound_check.csv`: spectral truncation errors and positive tail bounds used to audit convergence and uniqueness of the thresholds.
+- `claim_passport.csv`: claim-by-claim scope guardrails linking each manuscript claim to its evidence, limitation and required escalation.
+- `evidence_hierarchy.csv`: evidence hierarchy separating analytical limits, numerical verification, controlled benchmarks, external consistency checks and future field calibration.
 - `reproduce_article_123.py`: script for regenerating the numerical data and figures.
 - `check_oso_ring_shear.py`: script for downloading public USGS Oso ring-shear consolidation data and fitting pressure-dissipation operators.
 - `oso_ring_shear_consistency_summary.csv`: aggregate laboratory consistency metrics.

@@ -125,9 +125,18 @@ def main() -> None:
     fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
     ordered = rank.sort_values("abs_spearman_FS_PD")
     colors = ["#b2182b" if v < 0 else "#2166ac" for v in ordered["spearman_FS_PD"]]
-    ax.barh(ordered["input"], ordered["spearman_FS_PD"], color=colors)
+    labels = {
+        "h_m": r"$h$",
+        "cv_m2_s": r"$c_v$",
+        "T_s": r"$T$",
+        "Pu_kPa": r"$P_u$",
+        "phi_deg": r"$\phi'$",
+        "tau_kPa": r"$\tau$",
+        "sigma_eff0_kPa": r"$\sigma'_{n0}$",
+    }
+    ax.barh(ordered["input"].map(labels).fillna(ordered["input"]), ordered["spearman_FS_PD"], color=colors)
     ax.axvline(0.0, color="black", lw=0.9)
-    ax.set_xlabel("Spearman rank correlation with FS_PD")
+    ax.set_xlabel(r"Spearman rank correlation with $FS_{PD}$")
     ax.set_ylabel("Input variable")
     ax.grid(axis="x", alpha=0.25)
     fig.savefig(FIG_OUT / "figure_12_global_sensitivity_spearman.png", bbox_inches="tight", facecolor="white")
@@ -136,9 +145,9 @@ def main() -> None:
     fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
     ordered = prcc_frame.sort_values("abs_prcc_FS_PD")
     colors = ["#b2182b" if v < 0 else "#2166ac" for v in ordered["prcc_FS_PD"]]
-    ax.barh(ordered["input"], ordered["prcc_FS_PD"], color=colors)
+    ax.barh(ordered["input"].map(labels).fillna(ordered["input"]), ordered["prcc_FS_PD"], color=colors)
     ax.axvline(0.0, color="black", lw=0.9)
-    ax.set_xlabel("PRCC with FS_PD")
+    ax.set_xlabel(r"PRCC with $FS_{PD}$")
     ax.set_ylabel("Input variable")
     ax.grid(axis="x", alpha=0.25)
     fig.savefig(FIG_OUT / "figure_13_global_sensitivity_prcc.png", bbox_inches="tight", facecolor="white")
@@ -147,7 +156,7 @@ def main() -> None:
     fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
     ax.scatter(np.log10(data["Pi"]), data["FS_PD"], s=4, alpha=0.22, color="#2b8cbe")
     ax.axhline(1.0, color="black", ls="--", lw=0.9)
-    ax.set_xlabel("log10(Pi)")
+    ax.set_xlabel(r"$\log_{10}(\Pi)$")
     ax.set_ylabel("Partly drained factor of safety")
     ax.grid(alpha=0.25)
     fig.savefig(FIG_OUT / "figure_14_global_sensitivity_pi_fs.png", bbox_inches="tight", facecolor="white")
