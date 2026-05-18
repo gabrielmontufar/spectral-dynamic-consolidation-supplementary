@@ -143,6 +143,7 @@ def fit_model(record: pd.DataFrame, model_name: str) -> dict[str, float]:
     train_rmse_refined = np.array([rmse_for(cv, train_t, train_y) for cv in refined])
     cv = float(refined[int(np.argmin(train_rmse_refined))])
     pred_val = model(cv * val_t / max(thickness**2, 1e-8))
+    residual = pred_val - val_y
     rmse_val = float(np.sqrt(np.mean((pred_val - val_y) ** 2)))
     ss_res = float(np.sum((pred_val - val_y) ** 2))
     ss_tot = float(np.sum((val_y - np.mean(val_y)) ** 2))
@@ -155,6 +156,9 @@ def fit_model(record: pd.DataFrame, model_name: str) -> dict[str, float]:
         "n_validation": int(len(val_t)),
         "rmse_train": float(np.min(train_rmse_refined)),
         "rmse_validation": rmse_val,
+        "mae_validation": float(np.mean(np.abs(residual))),
+        "bias_validation": float(np.mean(residual)),
+        "p95_abs_residual": float(np.percentile(np.abs(residual), 95)),
         "r2_validation": r2_val,
     }
 
@@ -223,6 +227,9 @@ def main() -> None:
         agg = summary.groupby("model").agg(
             records=("source_file", "count"),
             median_rmse_validation=("rmse_validation", "median"),
+            median_mae_validation=("mae_validation", "median"),
+            median_bias_validation=("bias_validation", "median"),
+            median_p95_abs_residual=("p95_abs_residual", "median"),
             median_r2_validation=("r2_validation", "median"),
         ).reset_index()
         agg.to_csv(OUT / "oso_ring_shear_validation_summary.csv", index=False)

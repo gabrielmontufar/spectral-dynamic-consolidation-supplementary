@@ -50,6 +50,7 @@ The first script writes the synthetic benchmark CSV files in the same folder and
 - `oso_ring_shear_normalized_records.csv`: normalized Oso pressure-dissipation records used by the offline validation option.
 - `global_sensitivity_lhs_samples.csv`: Latin-hypercube samples for h, cv, T, Pu, phi, tau and sigma_eff0.
 - `global_sensitivity_spearman.csv`: Spearman/PRCC-style rank correlations for R(Pi), FS_PD and Psi.
+- `global_sensitivity_prcc.csv`: partial rank correlations after removing rank-linear dependence on the remaining inputs.
 - `global_sensitivity_summary.csv`: summary statistics from the global sensitivity benchmark.
 - `run_global_sensitivity.py`: script for regenerating the global sensitivity benchmark.
 - `requirements.txt`: minimal Python package list.

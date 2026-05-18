@@ -34,6 +34,26 @@ def spearman_corr(x: np.ndarray, y: np.ndarray) -> float:
     return float(np.corrcoef(xr, yr)[0, 1])
 
 
+def prcc(inputs: pd.DataFrame, output: pd.Series) -> dict[str, float]:
+    """Partial rank correlation by rank residualization."""
+    ranked_x = inputs.rank(method="average").to_numpy(dtype=float)
+    ranked_y = output.rank(method="average").to_numpy(dtype=float)
+    ranked_y = (ranked_y - ranked_y.mean()) / ranked_y.std()
+    result = {}
+    for j, name in enumerate(inputs.columns):
+        xj = ranked_x[:, j]
+        xj = (xj - xj.mean()) / xj.std()
+        others = np.delete(ranked_x, j, axis=1)
+        others = (others - others.mean(axis=0)) / others.std(axis=0)
+        design = np.column_stack([np.ones(len(others)), others])
+        beta_x, *_ = np.linalg.lstsq(design, xj, rcond=None)
+        beta_y, *_ = np.linalg.lstsq(design, ranked_y, rcond=None)
+        rx = xj - design @ beta_x
+        ry = ranked_y - design @ beta_y
+        result[name] = float(np.corrcoef(rx, ry)[0, 1])
+    return result
+
+
 def main() -> None:
     FIG_OUT.mkdir(exist_ok=True)
     rng = np.random.default_rng(12345)
@@ -78,6 +98,21 @@ def main() -> None:
     rank["abs_spearman_FS_PD"] = rank["spearman_FS_PD"].abs()
     rank = rank.sort_values("abs_spearman_FS_PD", ascending=False)
     rank.to_csv(OUT / "global_sensitivity_spearman.csv", index=False)
+    input_frame = data[inputs]
+    prcc_rows = []
+    prcc_r = prcc(input_frame, data["R_Pi"])
+    prcc_fs = prcc(input_frame, data["FS_PD"])
+    prcc_psi = prcc(input_frame, data["Psi"])
+    for variable in inputs:
+        prcc_rows.append({
+            "input": variable,
+            "prcc_RPi": prcc_r[variable],
+            "prcc_FS_PD": prcc_fs[variable],
+            "prcc_Psi": prcc_psi[variable],
+            "abs_prcc_FS_PD": abs(prcc_fs[variable]),
+        })
+    prcc_frame = pd.DataFrame(prcc_rows).sort_values("abs_prcc_FS_PD", ascending=False)
+    prcc_frame.to_csv(OUT / "global_sensitivity_prcc.csv", index=False)
     summary = pd.DataFrame([
         ["n_samples", n],
         ["failure_fraction_FS_lt_1", float(np.mean(fs_pd < 1.0))],
@@ -99,13 +134,24 @@ def main() -> None:
     fig.savefig(FIG_OUT / "Fig12.tif", bbox_inches="tight", facecolor="white")
     plt.close(fig)
     fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
+    ordered = prcc_frame.sort_values("abs_prcc_FS_PD")
+    colors = ["#b2182b" if v < 0 else "#2166ac" for v in ordered["prcc_FS_PD"]]
+    ax.barh(ordered["input"], ordered["prcc_FS_PD"], color=colors)
+    ax.axvline(0.0, color="black", lw=0.9)
+    ax.set_xlabel("PRCC with FS_PD")
+    ax.set_ylabel("Input variable")
+    ax.grid(axis="x", alpha=0.25)
+    fig.savefig(FIG_OUT / "figure_13_global_sensitivity_prcc.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "Fig13.tif", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
     ax.scatter(np.log10(data["Pi"]), data["FS_PD"], s=4, alpha=0.22, color="#2b8cbe")
     ax.axhline(1.0, color="black", ls="--", lw=0.9)
     ax.set_xlabel("log10(Pi)")
     ax.set_ylabel("Partly drained factor of safety")
     ax.grid(alpha=0.25)
-    fig.savefig(FIG_OUT / "figure_13_global_sensitivity_pi_fs.png", bbox_inches="tight", facecolor="white")
-    fig.savefig(FIG_OUT / "Fig13.tif", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "figure_14_global_sensitivity_pi_fs.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "Fig14.tif", bbox_inches="tight", facecolor="white")
     plt.close(fig)
     print(f"Global sensitivity samples written: {n}")
 
