@@ -1,0 +1,13 @@
+dataset,scale,validation,sensor_id,model,train_fraction,cv_train_m2s,n,mae,rmse,bias,spearman
+Mount Kaba-san,field experiment,early-window pressure prediction,Piezo.4,M0_drained,0.3,,420,0.639065934065934,0.9415085861040505,-0.4813492063492063,
+Mount Kaba-san,field experiment,early-window pressure prediction,Piezo.4,M1_undrained,0.3,,420,0.7815201465201466,0.9611139396602443,0.5186507936507937,
+Mount Kaba-san,field experiment,early-window pressure prediction,Piezo.4,M4_constant_source,0.3,1.0295755673125128e-07,420,0.7784245343685259,0.9579146364060702,0.5134778222843491,0.63747616843984
+Mount Kaba-san,field experiment,early-window pressure prediction,Piezo.4,M5_convolution_qt,0.3,4.2944879887892724e-07,420,0.9999259307226287,1.0583091307966335,0.292833801158976,-0.35550581521428926
+Mount Kaba-san,field experiment,early-window pressure prediction,Piezo.6,M0_drained,0.3,,420,0.7686042274052478,1.1440273138342434,0.04214650145772594,
+Mount Kaba-san,field experiment,early-window pressure prediction,Piezo.6,M1_undrained,0.3,,420,1.2853680758017494,1.546962022065909,1.042146501457726,
+Mount Kaba-san,field experiment,early-window pressure prediction,Piezo.6,M4_constant_source,0.3,0.00015941590374559997,420,1.1392133564614655,1.412613038422236,0.839317980178252,0.23511232351149608
+Mount Kaba-san,field experiment,early-window pressure prediction,Piezo.6,M5_convolution_qt,0.3,0.0005422221006501592,420,1.1756616029936622,1.4473701056843462,0.7227218136255836,-0.5036809478979464
+Mount Kaba-san,field experiment,early-window pressure prediction,Piezo.7,M0_drained,0.3,,420,0.7494227994227995,1.179704463091487,-0.6113997113997113,
+Mount Kaba-san,field experiment,early-window pressure prediction,Piezo.7,M1_undrained,0.3,,420,0.8519480519480519,1.0811582666004784,0.38860028860028856,
+Mount Kaba-san,field experiment,early-window pressure prediction,Piezo.7,M4_constant_source,0.3,1e-10,420,0.8509315489092946,1.080550290357338,0.38690662266544257,0.3919026151858658
+Mount Kaba-san,field experiment,early-window pressure prediction,Piezo.7,M5_convolution_qt,0.3,1e-10,420,0.8470905385018795,1.0624955552475028,0.1648654694873177,-0.18926329961571928

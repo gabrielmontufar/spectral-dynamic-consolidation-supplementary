@@ -1,8 +1,0 @@
-Evidence tier,Material used,What it supports,Evidence type
-Analytical limits,Pi -> 0 and Pi -> infinity,Operator tends to undrained and drained limits.,Theory check
-Numerical verification,FD and FEM benchmarks,Independent discretisations reproduce the spectral operator.,Verification
-Convergence audit,"Modal truncation, grid refinement and tail bounds",Thresholds are numerically stable and unique.,Verification
-Synthetic benchmark,Five infrastructure-slope cases,"Shows how h, cv and T change retained pressure and FS_PD.",Controlled demonstration
-Global sensitivity,Latin-hypercube and PRCC checks,Separates hydraulic controls of Pi from mechanical controls of FS_PD.,Robustness check
-External records,"Oso, Mount Kaba-san and flume public datasets",Pressure-dissipation behaviour is directionally compatible with bounded observations.,Consistency check
-Field-scale calibration,Not claimed in this package,"Requires geometry, hydraulic properties and observed slope response for the same event.",Future validation

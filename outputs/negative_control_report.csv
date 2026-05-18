@@ -1,0 +1,13 @@
+dataset,model_or_control,median_abs_error,physical_mae,skill_vs_physical,expected_behavior
+Mount Kaba-san,constant_R_baseline,0.49487710481758107,0.47755041457799574,-0.03628243157300304,degrades_vs_physical
+Mount Kaba-san,shuffled_Pi_control,0.50776582500227,0.47755041457799574,-0.0632716661987931,degrades_vs_physical
+Mount Kaba-san,random_h_control,0.473638640565974,0.47755041457799574,0.008191332040782595,does_not_degrade
+Mount Kaba-san,velocity_only_proxy,0.4045495115381215,0.47755041457799574,0.15286533277200487,does_not_degrade
+Oso,constant_R_baseline,0.1946246749079258,0.04623436829335496,-3.2095238259348777,degrades_vs_physical
+Oso,shuffled_Pi_control,0.2671133189119577,0.04623436829335496,-4.777375765515727,degrades_vs_physical
+Oso,random_h_control,0.15141248990368913,0.04623436829335496,-2.2748904222716697,degrades_vs_physical
+Oso,velocity_only_proxy,0.5325484441835381,0.04623436829335496,-10.518453995186924,degrades_vs_physical
+USGS flume,constant_R_baseline,0.3333124781866907,0.3965480194422705,0.15946502858473022,does_not_degrade
+USGS flume,shuffled_Pi_control,0.37198014644024885,0.3965480194422705,0.061954345495346175,does_not_degrade
+USGS flume,random_h_control,0.39256282310405227,0.3965480194422705,0.01004971943580324,does_not_degrade
+USGS flume,velocity_only_proxy,0.41752211007471546,0.3965480194422705,-0.052891679201787944,degrades_vs_physical

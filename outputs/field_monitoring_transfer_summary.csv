@@ -1,0 +1,5 @@
+model,median_mae,median_rmse,median_spearman,n_points,claim_level
+M0_drained,0.5818517814835138,0.7220562157048367,,896,independent public field-monitoring transfer check; not full field calibration
+M1_undrained,0.5941955572723652,0.7368165447847179,,896,independent public field-monitoring transfer check; not full field calibration
+M4_field_monitoring_Pi_R,0.4859602338442554,0.601443692977655,0.12271494084313692,896,independent public field-monitoring transfer check; not full field calibration
+M6_event_median_decay_baseline,0.4844766577259585,0.6052863123859364,-0.003692837030690274,896,independent public field-monitoring transfer check; not full field calibration

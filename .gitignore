@@ -1,2 +1,7 @@
-generated_figures/Fig*.tif
-external_data/
+# High-resolution journal production figures are distributed in the release ZIP.
+figures/Fig*.tif
+*.tmp
+~$*
+
+__pycache__/
+*.pyc

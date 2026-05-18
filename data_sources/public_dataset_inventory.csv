@@ -1,0 +1,5 @@
+dataset_id,scale,primary_variables,status,source
+oso_ring_shear,laboratory,"pore pressure, specimen thickness",pressure-dissipation prediction metrics available,USGS ScienceBase DOI 10.5066/F7KH0KSD
+mount_kabasan_2003,field experiment,"pore pressure, displacement",pressure-dissipation consistency metrics available,USGS ScienceBase DOI 10.5066/P18XMZPC
+usgs_flume_2016,physical flume,"pore pressure, normal stress, flow depth",observed regime inventory available,USGS ScienceBase DOI 10.5066/F7N58JKH
+cleveland_corral,public field monitoring,"rainfall, groundwater pressure head, extensometer displacement",storm-window transfer check available,USGS ScienceBase DOI 10.5066/P1P9DMFX

@@ -1,0 +1,9 @@
+Dataset,Model,Median_MAE_R,Winner
+Oso,M5_single_boundary_proxy,0.06090773140597079,M5_single_boundary_proxy
+Oso,M4_constant_source,0.06255444830983521,M5_single_boundary_proxy
+Oso,M0_drained,0.23668137249493265,M5_single_boundary_proxy
+Oso,M1_undrained,0.764026849857006,M5_single_boundary_proxy
+Mount Kaba-san,M0_drained,0.7494227994227995,M0_drained
+Mount Kaba-san,M4_constant_source,0.8509315489092946,M0_drained
+Mount Kaba-san,M1_undrained,0.8519480519480519,M0_drained
+Mount Kaba-san,M5_convolution_qt,0.9999259307226287,M0_drained

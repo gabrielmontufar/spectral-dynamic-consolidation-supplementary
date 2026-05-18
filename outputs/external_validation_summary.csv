@@ -1,0 +1,4 @@
+Dataset,Scale,Validation,MAE R,RMSE R,Spearman,AUC,Brier skill,Macro-F1,Result
+Oso,lab,LORO pressure retention,0.06090773140597079,0.08796160590344777,0.994057753851303,NA,NA,NA,pass
+Mount Kaba-san,field experiment,pressure prediction from early window,0.8509315489092946,1.080550290357338,0.3919026151858658,not estimated,not estimated,NA,conditional
+USGS flume,physical flume,regime classification screen,0.07494209159192707,NA,0.8357828928127937,NA,NA,0.7714285714285715,pass

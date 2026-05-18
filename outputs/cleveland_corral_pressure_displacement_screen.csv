@@ -1,0 +1,3 @@
+dataset,screen,split,threshold_train,n_events,accuracy,f1_active,tp,fp,fn,tn,claim_level
+Cleveland Corral,event_amplitude_cm,test,9.26749999999998,36,0.6388888888888888,0.7636363636363637,21,11,2,2,auxiliary pressure-displacement screening only
+Cleveland Corral,event_rain_7d_mm,test,31.161999999999978,36,0.6111111111111112,0.6818181818181818,15,6,8,7,auxiliary pressure-displacement screening only

@@ -1,0 +1,9 @@
+dataset,validation,metric,model,baseline,n_records,estimate,ci95_low,ci95_high
+Oso ring-shear,leave-one-record-out,mae_skill_vs_M0_drained,M4_constant_source,M0_drained,11,0.6372530860302121,0.49860433810141924,0.7420569988412757
+Oso ring-shear,leave-one-record-out,mae_skill_vs_M1_undrained,M4_constant_source,M1_undrained,11,0.8727897866187546,0.7884099057977797,0.9298826344382315
+Oso ring-shear,leave-one-record-out,mae_skill_vs_M0_drained,M5_single_boundary_proxy,M0_drained,11,0.6406934889451861,0.502718334465239,0.7474047261146436
+Oso ring-shear,leave-one-record-out,mae_skill_vs_M1_undrained,M5_single_boundary_proxy,M1_undrained,11,0.8736107490325747,0.7924110620352006,0.9316045225999229
+Oso ring-shear,leave-one-record-out,mae,M0_drained,,11,0.2337347899095927,0.19641460953722875,0.2690252484752829
+Oso ring-shear,leave-one-record-out,mae,M1_undrained,,11,0.7674238234249988,0.7322535264745826,0.8044883911491159
+Oso ring-shear,leave-one-record-out,mae,M4_constant_source,,11,0.09205016291760434,0.0543288248666031,0.14367948432532412
+Oso ring-shear,leave-one-record-out,mae,M5_single_boundary_proxy,,11,0.0914118458604093,0.053810641261666924,0.14287529539374516

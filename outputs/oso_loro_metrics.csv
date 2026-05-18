@@ -1,0 +1,45 @@
+dataset,scale,validation,held_out_record,model,n,mae,rmse,bias,spearman
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_0.005cms.txt,M0_drained,2496,0.2598579365807886,0.3800387271158841,-0.2582948947432837,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_0.005cms.txt,M1_undrained,2496,0.7418791307141546,0.7923633286701839,0.7417051052567163,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_0.005cms.txt,M4_constant_source,2496,0.06255444830983521,0.07267239513595171,0.02448055296888635,0.9906501849406564
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_0.005cms.txt,M5_single_boundary_proxy,2496,0.06090773140597079,0.07160933688215715,0.022053489656686954,0.9906501849406564
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_0.1cms.txt,M0_drained,2506,0.2767505110822155,0.3916885521842832,-0.2754752032848766,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_0.1cms.txt,M1_undrained,2506,0.724575367261326,0.7761890976704495,0.7245247967151234,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_0.1cms.txt,M4_constant_source,2506,0.050824911325893146,0.06426826868459144,0.0011478120022063117,0.9952631922671787
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_0.1cms.txt,M5_single_boundary_proxy,2506,0.04993721678683804,0.06413360224874519,-0.0012542943270298845,0.9952631922671787
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_5.497cms.txt,M0_drained,5243,0.24886116477064446,0.3767630625479089,-0.24795123891022003,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_5.497cms.txt,M1_undrained,5243,0.7521504465687284,0.8037710665855293,0.75204876108978,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_5.497cms.txt,M4_constant_source,5243,0.1069953255524455,0.14365780276241724,-0.10543612185154613,0.9954347209558374
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_5.497cms.txt,M5_single_boundary_proxy,5243,0.10842496929087712,0.14536316688853826,-0.10691257966660142,0.9954347209558374
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_controlled shear stress_gouge.txt,M0_drained,4295,0.23659325572820952,0.34961630327450044,-0.23602267424969187,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_controlled shear stress_gouge.txt,M1_undrained,4295,0.764026849857006,0.8063412497298793,0.7639773257503082,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_controlled shear stress_gouge.txt,M4_constant_source,4295,0.0696792369130175,0.09612664481895736,-0.06124038041401096,0.9976604285240397
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_100kPa_controlled shear stress_gouge.txt,M5_single_boundary_proxy,4295,0.07128553280376412,0.0977231440248394,-0.06300468792875952,0.9976604285240397
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_200kPa_0.001cms.txt,M0_drained,2667,0.23668137249493265,0.3497300677523313,-0.23578202698849524,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_200kPa_0.001cms.txt,M1_undrained,2667,0.7643763166671796,0.8066889526410163,0.7642179730115046,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_200kPa_0.001cms.txt,M4_constant_source,2667,0.037900415435939645,0.044700781182164064,0.012508727395061016,0.994057753851303
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_200kPa_0.001cms.txt,M5_single_boundary_proxy,2667,0.03656498632781236,0.04401081198622448,0.010241175134902133,0.994057753851303
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_0.001cms.txt,M0_drained,3236,0.1934319300370252,0.31966290070074055,-0.1924310768932205,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_0.001cms.txt,M1_undrained,3236,0.8076214707761534,0.8469487684021806,0.8075689231067795,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_0.001cms.txt,M4_constant_source,3236,0.03893725946487519,0.08764784864416633,-0.0063192606480701186,0.9869168620149303
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_0.001cms.txt,M5_single_boundary_proxy,3236,0.038305686065079204,0.08796160590344777,-0.008175283764127662,0.9869168620149303
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_0.01cms.txt,M0_drained,4931,0.11142423324866631,0.2282494928710946,-0.11053872153901596,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_0.01cms.txt,M1_undrained,4931,0.8897009866121208,0.9116031965268002,0.889461278460984,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_0.01cms.txt,M4_constant_source,4931,0.03073885024204708,0.045537362369764973,0.02222365490634625,0.9723592375291714
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_0.01cms.txt,M5_single_boundary_proxy,4931,0.02962326803687331,0.044174002744216165,0.02084095666462862,0.9723592375291714
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_1.001cms.txt,M0_drained,3425,0.15363655557311282,0.27337155614221154,-0.1532876990634573,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_1.001cms.txt,M1_undrained,3425,0.8468990517721013,0.8764454401619646,0.8467123009365427,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_1.001cms.txt,M4_constant_source,3425,0.04824807060777859,0.05694820060589267,0.03884972829249637,0.9914196903970506
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_1.001cms.txt,M5_single_boundary_proxy,3425,0.046551258002604,0.05516730537373547,0.036946750950724305,0.9914196903970506
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_controlled shear stress_unfailed.txt,M0_drained,4439,0.28080849046839884,0.39199457412230715,-0.2781208780094609,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_controlled shear stress_unfailed.txt,M1_undrained,4439,0.7219256601832483,0.772928192086695,0.721879121990539,
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_controlled shear stress_unfailed.txt,M4_constant_source,4439,0.13859755766267912,0.167614487555075,-0.1356864925005103,0.9783193417183831
+Oso,lab,leave-one-record-out pressure retention,clay_consolidation_400kPa_controlled shear stress_unfailed.txt,M5_single_boundary_proxy,4439,0.1400597091230972,0.1693915876322523,-0.13716196642115908,0.9783193417183831
+Oso,lab,leave-one-record-out pressure retention,clayey silt_consolidation_200kPa_controlled shear stress_unfailed.txt,M0_drained,3977,0.22465181623389005,0.31085699514092824,-0.22416362587232053,
+Oso,lab,leave-one-record-out pressure retention,clayey silt_consolidation_200kPa_controlled shear stress_unfailed.txt,M1_undrained,3977,0.7758741603279589,0.8051737822876537,0.7758363741276794,
+Oso,lab,leave-one-record-out pressure retention,clayey silt_consolidation_200kPa_controlled shear stress_unfailed.txt,M4_constant_source,3977,0.10610157864866997,0.10921003211586523,0.10319830554115131,0.9995302963234908
+Oso,lab,leave-one-record-out pressure retention,clayey silt_consolidation_200kPa_controlled shear stress_unfailed.txt,M5_single_boundary_proxy,3977,0.10356835236827765,0.10672332157371939,0.10063372323560577,0.9995302963234908
+Oso,lab,leave-one-record-out pressure retention,clayey_silt_consolidation_400kPa_controlled shear stress_gouge.txt,M0_drained,2680,0.3483854227876366,0.4621468767670406,-0.347373038841227,
+Oso,lab,leave-one-record-out pressure retention,clayey_silt_consolidation_400kPa_controlled shear stress_gouge.txt,M1_undrained,2680,0.65263261693501,0.7203010884505703,0.6526269611587731,
+Oso,lab,leave-one-record-out pressure retention,clayey_silt_consolidation_400kPa_controlled shear stress_gouge.txt,M4_constant_source,2680,0.32197413793046725,0.3605267843440047,0.30951050574853944,0.9999810011276691
+Oso,lab,leave-one-record-out pressure retention,clayey_silt_consolidation_400kPa_controlled shear stress_gouge.txt,M5_single_boundary_proxy,2680,0.3203015942533086,0.35864435769539127,0.30769203949261753,0.9999810011276691

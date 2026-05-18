@@ -1,0 +1,6 @@
+dataset,scale,validation,held_out_experiment,balanced_accuracy_proxy,macro_f1_proxy,mae_R_proxy,spearman_proxy
+USGS flume,physical flume,leave-one-experiment-out regime screen,2016_06_14_archive_corrected.csv,0.8827172827172827,0.8827172827172827,0.07294109257926967,0.8357828928127937
+USGS flume,physical flume,leave-one-experiment-out regime screen,2016_06_15_archive_corrected.csv,0.7714285714285715,0.7714285714285715,0.07494209159192707,0.8311095457968615
+USGS flume,physical flume,leave-one-experiment-out regime screen,2016_06_16_archive_corrected.csv,0.6611388611388611,0.6611388611388611,0.07508922945832265,0.8452524359367691
+USGS flume,physical flume,leave-one-experiment-out regime screen,2016_06_21_archive_corrected.csv,0.8379620379620379,0.8379620379620379,0.055273140056209064,0.8616452918134998
+USGS flume,physical flume,leave-one-experiment-out regime screen,2016_06_22_archive_corrected.csv,0.736,0.736,0.07896695008040706,0.7872947088380475

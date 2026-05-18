@@ -1,0 +1,59 @@
+mode: full
+root: C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1
+scipy_fft_available: True
+runtime_seconds: 16.842
+status: success
+
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\outputs\flume_confusion_matrix.csv
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\outputs\flume_regime_classification_report.csv
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\outputs\mount_kaba_failure_decomposition.csv
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\outputs\mount_kaba_parameter_inversion.csv
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\outputs\mount_kaba_timing_validation.csv
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\figures\fig17_flume_confusion_matrix.png
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\figures\fig18_mount_kaba_failure_decomposition.png
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\figures\fig19_mount_kaba_timing_validation.png
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\outputs\oso_loro_bootstrap_skill.csv
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\figures\fig16_oso_loro_bootstrap_skill.png
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\outputs\dimensionless_validation_matrix.csv
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\outputs\dimensionless_collapse_metrics.csv
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\outputs\negative_control_report.csv
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\figures\dimensionless_collapse_envelope.png
+wrote C:\Users\gjm31\OneDrive\Escritorio\articulos up\123 avo art\Entrega Acta Geotechnica 20260511\working_backups_not_for_journal_upload\ESM_1_predictive_validation_staging\ESM_1\figures\negative_control_skill.png
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+C:\Users\gjm31\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\site-packages\pandas\core\nanops.py:1661: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+wrote Cleveland Corral field-monitoring transfer outputs
+All validation outputs regenerated successfully.

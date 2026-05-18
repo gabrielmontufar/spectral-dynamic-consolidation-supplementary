@@ -1,0 +1,17 @@
+dataset,scale,validation,record_id,split,model,cv_train_m2_s,h_m,n,mae,rmse,spearman
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P1,train,M0_drained,,1.79,1014,0.5494960213272525,0.6664750886903552,
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P1,train,M1_undrained,,1.79,1014,0.6049205539980274,0.7546309896923166,
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P1,train,M4_field_monitoring_Pi_R,1.7073526474706888e-07,1.79,1014,0.4180528713801038,0.5078791460978993,0.11309305275561138
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P1,train,M6_event_median_decay_baseline,,1.79,1014,0.4059027166434358,0.49332450217413243,0.2090054273472174
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P1,test,M0_drained,,1.79,557,0.485371205715417,0.6483987196329783,
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P1,test,M1_undrained,,1.79,557,0.6942475425438427,0.8256593013092421,
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P1,test,M4_field_monitoring_Pi_R,1.7073526474706888e-07,1.79,557,0.4803521957036003,0.5593442210763843,0.04076573007765111
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P1,test,M6_event_median_decay_baseline,,1.79,557,0.4683527182543583,0.5422910471954415,0.15341731071608983
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P2,train,M0_drained,,3.69,891,0.896470617894094,0.9614561326745172,
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P2,train,M1_undrained,,3.69,891,0.3161252815328161,0.47471158750089726,
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P2,train,M4_field_monitoring_Pi_R,1e-10,3.69,891,0.3164375296560818,0.47274116438262,-0.16968310109170856
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P2,train,M6_event_median_decay_baseline,,3.69,891,0.3112992523216596,0.4781155497917788,0.17184220967738661
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P2,test,M0_drained,,3.69,339,0.6783323572516107,0.7957137117766949,
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P2,test,M1_undrained,,3.69,339,0.49414357200088777,0.6479737882601937,
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P2,test,M4_field_monitoring_Pi_R,1e-10,3.69,339,0.4915682719849105,0.6435431648789256,0.20466415160862272
+Cleveland Corral,public field monitoring,storm-window pore-pressure retention transfer,mid_P2,test,M6_event_median_decay_baseline,,3.69,339,0.5006005971975587,0.6682815775764315,-0.16080298477747038

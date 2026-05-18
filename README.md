@@ -1,69 +1,122 @@
-﻿# Supplementary Material
+# Online Resource 1 / ESM_1
 
 Manuscript: A spectral dynamic-consolidation criterion for drainage transition in rapid saturated landslides.
 
-This package contains synthetic benchmark data and reproducible Python scripts used to regenerate the retained-pressure curve, numerical verification, convergence checks, local and global sensitivity analyses, boundary-condition comparison, temporal source-history comparison, truncation-error bound check, and bounded external pressure-dissipation consistency checks against public USGS Oso ring-shear, Mount Kaba-san and debris-flow flume records.
+This package contains the offline data, scripts, outputs and figures used for the synthetic verification and the bounded external predictive-validation pass requested for Acta Geotechnica. The external datasets are public USGS/ScienceBase sources: Oso ring-shear, Mount Kaba-san and the 2016 USGS debris-flow flume records.
 
-## Runtime
+## Reproduce the validation
 
-Python 3 with:
-
-- numpy 2.4.4
-- pandas 3.0.3
-- matplotlib 3.10.9
-
-The script does not require SciPy.
-
-The scripts generate all figures from code. Figure 1 is a technical schematic drawn with Matplotlib patches and annotations; it does not rely on external or generative-AI image files. High-resolution TIFF versions named `Fig1.tif` through `Fig11.tif` are generated for journal production, while PNG copies are kept for review and repository viewing.
-
-## Reproduction
-
-Run:
+From this `ESM_1` folder run:
 
 ```bash
-python reproduce_article_123.py
-python check_oso_ring_shear.py
-python check_oso_ring_shear.py --offline
-python run_global_sensitivity.py
-python validation/run_all_validation.py --offline
+python scripts/run_all_validation.py --offline
 ```
 
-The first script writes the synthetic benchmark CSV files in the same folder and writes regenerated figures to `generated_figures/`. The second script downloads selected public USGS/ScienceBase Oso ring-shear consolidation files, fits double- and single-drainage pressure-dissipation operators using a temporal split, and writes held-out consistency metrics and figures. The `--offline` option uses the included normalized Oso records. The third script runs a Latin-hypercube global sensitivity check. The final script runs the bounded external consistency workflow and regenerates the output metrics and multi-dataset figures from available public data.
+Two reproducibility modes are available:
 
-## Files
+```bash
+python scripts/run_all_validation.py --offline --fast
+python scripts/run_all_validation.py --offline --full
+```
 
-- `retention_curve.csv`: spectral retained-pressure curve.
-- `benchmark_cases.csv`: synthetic infrastructure-slope benchmark cases.
-- `verification_fd_fem.csv`: spectral, finite-difference and finite-element comparison.
-- `convergence_checks.csv`: grid, mesh and spectral-series convergence checks.
-- `literature_comparison.csv`: comparison with existing approaches.
-- `external_consistency_check.csv`: external consistency anchors.
-- `sensitivity.csv`: normalized sensitivity of the partly drained factor of safety.
-- `thresholds.csv`: retained-pressure regime boundaries.
-- `boundary_condition_comparison.csv`: double-drainage versus single-drainage retained-pressure thresholds.
-- `temporal_source_retention.csv`: retained fractions for front-loaded, constant, middle-pulse and back-loaded pressure-generation histories.
-- `truncation_bound_check.csv`: spectral truncation errors and positive tail bounds used to audit convergence and uniqueness of the thresholds.
-- `claim_passport.csv`: claim-by-claim scope guardrails linking each manuscript claim to its evidence, limitation and required escalation.
-- `evidence_hierarchy.csv`: evidence hierarchy separating analytical limits, numerical verification, controlled benchmarks, external consistency checks and future field calibration.
-- `reproduce_article_123.py`: script for regenerating the numerical data and figures.
-- `check_oso_ring_shear.py`: script for downloading public USGS Oso ring-shear consolidation data and fitting pressure-dissipation operators.
-- `oso_ring_shear_consistency_summary.csv`: aggregate laboratory consistency metrics.
-- `oso_ring_shear_consistency_metrics.csv`: per-record fitted hydraulic parameters and held-out errors.
-- `oso_ring_shear_consistency_predictions.csv`: sampled observed and fitted retained-pressure curves.
-- `oso_ring_shear_normalized_records.csv`: normalized Oso pressure-dissipation records used by the offline consistency-check option.
-- `global_sensitivity_lhs_samples.csv`: Latin-hypercube samples for h, cv, T, Pu, phi, tau and sigma_eff0.
-- `global_sensitivity_spearman.csv`: Spearman/PRCC-style rank correlations for R(Pi), FS_PD and Psi.
-- `global_sensitivity_prcc.csv`: partial rank correlations after removing rank-linear dependence on the remaining inputs.
-- `global_sensitivity_summary.csv`: summary statistics from the global sensitivity benchmark.
-- `run_global_sensitivity.py`: script for regenerating the global sensitivity benchmark.
-- `validation_protocol.md`: predeclared external consistency/validation protocol and guardrails.
-- `data_sources.md`: official USGS/ScienceBase source list and DOI traceability.
-- `validation/run_all_validation.py`: bounded external consistency workflow for Oso, Mount Kaba-san and available USGS flume records.
-- `outputs/external_dataset_inventory.csv`: inventory of the public validation sources and the role each source can support.
-- `outputs/mount_kabasan_consistency_metrics.csv`: field-scale pressure-dissipation consistency metrics for the Mount Kaba-san failure-period pore-pressure records.
-- `outputs/flume_regime_observation_summary.csv`: observed pore-pressure regime inventory from available USGS flume corrected CSV files.
-- `requirements.txt`: minimal Python package list.
-- `generated_figures/`: regenerated figures used for manuscript review and journal production.
+`--fast` reads the normalized tables in `data_normalized/`, uses controlled
+downsampling for the Mount Kaba-san pressure traces, and evaluates the M5
+convolution with FFT acceleration when SciPy is available; when SciPy is not
+available it falls back to NumPy convolution. `--full` keeps the complete
+Mount Kaba-san resolution. The default is `--full`, so the original command
+above remains the full-resolution regeneration path. Successful runs write
+`outputs/reproducibility_run_log_fast.txt` for `--fast` and
+`outputs/reproducibility_run_log.txt` for `--full`.
 
-The benchmark data are synthetic and support reproducibility of the mathematical operator. The Oso consistency-check files are derived from the public USGS data release cited in the manuscript and are used only as laboratory-scale dissipation consistency checks. Mount Kaba-san and the USGS flume records are official public USGS data used for bounded external consistency and regime-inventory checks, not as field-scale design calibration.
+The command regenerates:
 
+- `outputs/oso_loro_metrics.csv`
+- `outputs/oso_loro_bootstrap_skill.csv`
+- `outputs/mount_kabasan_predictive_metrics.csv`
+- `outputs/mount_kaba_failure_decomposition.csv`
+- `outputs/mount_kaba_m5_convolution_comparison.csv`
+- `outputs/mount_kaba_parameter_inversion.csv`
+- `outputs/mount_kaba_timing_validation.csv`
+- `outputs/flume_leave_one_experiment_metrics.csv`
+- `outputs/flume_confusion_matrix.csv`
+- `outputs/flume_regime_classification_report.csv`
+- `outputs/dimensionless_validation_matrix.csv`
+- `outputs/dimensionless_collapse_metrics.csv`
+- `outputs/negative_control_report.csv`
+- `outputs/cleveland_corral_field_monitoring_matrix.csv`
+- `outputs/cleveland_corral_transfer_metrics.csv`
+- `outputs/cleveland_corral_transfer_predictions.csv`
+- `outputs/cleveland_corral_pressure_displacement_events.csv`
+- `outputs/cleveland_corral_pressure_displacement_screen.csv`
+- `outputs/field_monitoring_transfer_summary.csv`
+- `outputs/generalized_impedance_operator_atlas.csv`
+- `outputs/generalized_impedance_thresholds.csv`
+- `outputs/generalized_source_history_index.csv`
+- `outputs/uncertainty_validation_metrics.csv`
+- `outputs/external_validation_summary.csv`
+- `outputs/model_comparison_summary.csv`
+- `figures/fig12_mount_kabasan_predictive_validation.png`
+- `figures/fig13_flume_regime_validation.png`
+- `figures/fig14_uncertainty_bounded_validation.png`
+- `figures/fig15_model_comparison_summary.png`
+- `figures/fig16_oso_loro_bootstrap_skill.png`
+- `figures/fig16_mount_kaba_failure_decomposition.png`
+- `figures/fig17_flume_confusion_matrix.png`
+- `figures/fig17_mount_kaba_FS_timing.png`
+- `figures/fig18_mount_kaba_failure_decomposition.png`
+- `figures/fig18_oso_loro_skill_bootstrap.png`
+- `figures/fig19_flume_confusion_matrix.png`
+- `figures/fig19_mount_kaba_timing_validation.png`
+- `figures/dimensionless_collapse_envelope.png`
+- `figures/negative_control_skill.png`
+- `figures/fig17_cleveland_corral_field_monitoring_transfer.png`
+- `figures/fig18_cleveland_corral_displacement_screen.png`
+- `figures/fig19_generalized_impedance_drainage_atlas.png`
+- `figures/fig20_source_history_centroid_operator.png`
+- `README_validation_collapse.md`
+- `README_field_monitoring_transfer.md`
+- `README_generalized_impedance_operator.md`
+
+## Structure
+
+- `data_sources/`: public source inventory and DOI/source notes.
+- `data_normalized/`: normalized Oso, Mount Kaba-san and USGS flume tables used by the offline scripts.
+- `scripts/`: one-command validation runner, preparation wrappers, original article-generation scripts and legacy bounded-consistency workflow.
+- `outputs/`: CSV metrics and model-comparison summaries regenerated by the scripts.
+- `figures/`: validation figures regenerated by the scripts.
+- `external_data/`: raw public USGS files retained for traceability and offline reproducibility.
+
+The Oso test is organized as leave-one-record-out pressure-retention prediction using hydraulic parameters estimated from the remaining records. The Mount Kaba-san test uses only the early pressure window for parameter estimation before predicting held-out pressure retention. The USGS flume analysis is a regime-classification screen based on observed pore-pressure ratio; it is reported as a bounded external validation layer, not as full slope-stability calibration.
+
+The Cleveland Corral public field-monitoring check uses daily USGS records from
+the Highway 50 landslide monitoring release. Storm windows are selected from
+rainfall increments, pressure-head retention is normalized by the event peak,
+and the fitted cv is estimated on pre-2011 storm windows before being evaluated
+on later held-out storm windows. The associated displacement screen is auxiliary
+only and must not be read as a calibrated mobility or factor-of-safety model.
+
+The generalized impedance/source-history operator files support the manuscript
+reframing from a single double-drainage criterion to an operator family
+`R_g(Pi,B0,B1,chi_q)`. The double-drainage curve is retained as a benchmark
+limit; finite boundary admittance and early/late pressure generation are
+reported as reproducible operator variants.
+
+In Mount Kaba-san prediction outputs, `R_star_obs` denotes the observed
+normalized pressure-retention ratio used for prediction diagnostics. It is a
+normalized ratio, not a probability, and it is not intrinsically bounded to the
+closed interval [0, 1].
+
+The dimensionless-collapse matrix reports the declared drainage length,
+consolidation coefficient, elapsed time, Pi value and boundary/source class
+where those quantities are available. Blank hydraulic fields in the flume rows
+mean that the record is used only as a regime-screening proxy, not as a
+calibrated consolidation-collapse record.
+
+## Expected validation results
+
+- Oso LORO: M4/M5 outperform drained and undrained baselines; bootstrap skill intervals against the drained baseline are positive.
+- USGS flume: drainage-regime screening skill is positive, with macro-F1 reported in `outputs/flume_regime_classification_report.csv`.
+- Mount Kaba-san: current early-window field transfer fails against the drained baseline; this is reported as the boundary of field-scale use for the simplified operator, not as validation success.
+- Dimensionless-collapse check: the validation matrix projects Oso, flume and Mount Kaba-san records into a Pi-R/R* space and compares the physical Pi-R ordering against negative controls such as shuffled Pi, random h, velocity-only ordering and constant-retention baselines. This is an external-consistency and falsifiability check, not a field-calibrated landslide model.
+- Cleveland Corral: the Pi-R field-monitoring transfer check improves over drained and undrained pressure-retention baselines on held-out storm windows, but remains similar to an empirical event-median decay baseline. The result is reported as independent public field-monitoring consistency, not full field calibration.
+- Generalized operator atlas: finite boundary admittance and source-history timing shift retained-pressure thresholds, so the double-drainage values are benchmark constants rather than universal field thresholds.
