@@ -1,9 +1,9 @@
-"""Validate the retained-pressure operator against USGS Oso ring-shear data.
+"""Check the retained-pressure operator against USGS Oso ring-shear data.
 
 The script downloads public ScienceBase files from the USGS data release
 10.5066/F7KH0KSD and fits the pressure-dissipation part of the operator to
-laboratory consolidation records. It is a laboratory consistency validation,
-not a field-scale landslide calibration.
+laboratory consolidation records. It is a held-out laboratory consistency
+check, not a field-scale landslide calibration.
 """
 
 from __future__ import annotations
@@ -70,7 +70,7 @@ def download_oso_files() -> list[Path]:
         f for f in item["files"]
         if "consolidation" in f["name"].lower() and f.get("size", 0) < 900000
     ]
-    # Keep validation reproducible and fast: use a balanced subset across
+    # Keep the check reproducible and fast: use a balanced subset across
     # material labels and normal stresses, preferring compact files.
     selected = sorted(selected, key=lambda f: f.get("size", 0))[:12]
     paths = []
@@ -153,18 +153,18 @@ def fit_model(record: pd.DataFrame, model_name: str) -> dict[str, float]:
         "cv_fit_m2_s": cv,
         "thickness_m": thickness,
         "n_train": int(len(train_t)),
-        "n_validation": int(len(val_t)),
+        "n_heldout": int(len(val_t)),
         "rmse_train": float(np.min(train_rmse_refined)),
-        "rmse_validation": rmse_val,
-        "mae_validation": float(np.mean(np.abs(residual))),
-        "bias_validation": float(np.mean(residual)),
+        "rmse_heldout": rmse_val,
+        "mae_heldout": float(np.mean(np.abs(residual))),
+        "bias_heldout": float(np.mean(residual)),
         "p95_abs_residual": float(np.percentile(np.abs(residual), 95)),
-        "r2_validation": r2_val,
+        "r2_heldout": r2_val,
     }
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Validate retained-pressure operators against Oso ring-shear data.")
+    parser = argparse.ArgumentParser(description="Check retained-pressure operators against Oso ring-shear data.")
     parser.add_argument(
         "--offline",
         action="store_true",
@@ -200,7 +200,7 @@ def main() -> None:
         if len(record) > 500:
             record = record.iloc[np.linspace(0, len(record) - 1, 500).astype(int)].reset_index(drop=True)
         fits = [fit_model(record, "double"), fit_model(record, "single")]
-        best = min(fits, key=lambda row: row["rmse_validation"])
+        best = min(fits, key=lambda row: row["rmse_heldout"])
         for fit in fits:
             fit["source_file"] = source_name
             fit["best_model_for_record"] = best["model"]
@@ -221,27 +221,27 @@ def main() -> None:
                 })
     summary = pd.DataFrame(summary_rows)
     predictions = pd.DataFrame(prediction_rows)
-    summary.to_csv(OUT / "oso_ring_shear_validation_metrics.csv", index=False)
-    predictions.to_csv(OUT / "oso_ring_shear_validation_predictions.csv", index=False)
+    summary.to_csv(OUT / "oso_ring_shear_consistency_metrics.csv", index=False)
+    predictions.to_csv(OUT / "oso_ring_shear_consistency_predictions.csv", index=False)
     if not summary.empty:
         agg = summary.groupby("model").agg(
             records=("source_file", "count"),
-            median_rmse_validation=("rmse_validation", "median"),
-            median_mae_validation=("mae_validation", "median"),
-            median_bias_validation=("bias_validation", "median"),
+            median_rmse_heldout=("rmse_heldout", "median"),
+            median_mae_heldout=("mae_heldout", "median"),
+            median_bias_heldout=("bias_heldout", "median"),
             median_p95_abs_residual=("p95_abs_residual", "median"),
-            median_r2_validation=("r2_validation", "median"),
+            median_r2_heldout=("r2_heldout", "median"),
         ).reset_index()
-        agg.to_csv(OUT / "oso_ring_shear_validation_summary.csv", index=False)
+        agg.to_csv(OUT / "oso_ring_shear_consistency_summary.csv", index=False)
         fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
-        data = [summary.loc[summary["model"] == model, "rmse_validation"] for model in ["double", "single"]]
+        data = [summary.loc[summary["model"] == model, "rmse_heldout"] for model in ["double", "single"]]
         ax.boxplot(data, tick_labels=["double drainage", "single drainage"], showfliers=True)
-        ax.set_ylabel("Validation RMSE in normalized retained pressure")
+        ax.set_ylabel("Held-out RMSE in normalized retained pressure")
         ax.grid(axis="y", alpha=0.25)
-        fig.savefig(FIG_OUT / "figure_10_oso_validation_rmse.png", bbox_inches="tight", facecolor="white")
+        fig.savefig(FIG_OUT / "figure_10_oso_consistency_rmse.png", bbox_inches="tight", facecolor="white")
         fig.savefig(FIG_OUT / "Fig10.tif", bbox_inches="tight", facecolor="white")
         plt.close(fig)
-        best_file = summary.sort_values("rmse_validation").iloc[0]["source_file"]
+        best_file = summary.sort_values("rmse_heldout").iloc[0]["source_file"]
         subset = predictions[predictions["source_file"] == best_file]
         fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
         obs = subset[subset["model"] == "double"]
@@ -254,10 +254,10 @@ def main() -> None:
         ax.set_title(best_file)
         ax.grid(alpha=0.25)
         ax.legend(frameon=False)
-        fig.savefig(FIG_OUT / "figure_11_oso_validation_example.png", bbox_inches="tight", facecolor="white")
+        fig.savefig(FIG_OUT / "figure_11_oso_consistency_example.png", bbox_inches="tight", facecolor="white")
         fig.savefig(FIG_OUT / "Fig11.tif", bbox_inches="tight", facecolor="white")
         plt.close(fig)
-    print(f"Validated {summary['source_file'].nunique() if not summary.empty else 0} Oso consolidation records")
+    print(f"Checked {summary['source_file'].nunique() if not summary.empty else 0} Oso consolidation records")
     print(f"Metrics written to {OUT}")
 
 

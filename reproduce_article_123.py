@@ -199,15 +199,15 @@ def build_data() -> dict[str, pd.DataFrame]:
         {"Pi": pi_curve, "R_Pi": spectral_retention(pi_curve, terms=700)}
     )
 
-    validation_pi = np.array(
+    verification_pi = np.array(
         [0.004, 0.02, thresholds[0.5], 0.12, 0.5, thresholds[0.1], 2.4]
     )
-    validation_rows = []
-    for value in validation_pi:
+    verification_rows = []
+    for value in verification_pi:
         spectral = spectral_retention(value, terms=1200)
         fd = fd_retention(float(value))
         fem = fem_retention(float(value))
-        validation_rows.append(
+        verification_rows.append(
             {
                 "Pi": value,
                 "R_spectral": spectral,
@@ -217,7 +217,7 @@ def build_data() -> dict[str, pd.DataFrame]:
                 "FEM_abs_error": abs(fem - spectral),
             }
         )
-    validation = pd.DataFrame(validation_rows)
+    verification = pd.DataFrame(verification_rows)
 
     reference_pi = np.logspace(-3, 1, 80)
     ref = spectral_retention(reference_pi, terms=5000)
@@ -233,7 +233,7 @@ def build_data() -> dict[str, pd.DataFrame]:
             }
         )
     for n, steps in [(40, 300), (80, 600), (120, 800)]:
-        err = max(abs(fd_retention(float(v), n=n, steps=steps) - spectral_retention(v)) for v in validation_pi)
+        err = max(abs(fd_retention(float(v), n=n, steps=steps) - spectral_retention(v)) for v in verification_pi)
         convergence_rows.append(
             {
                 "Check": "finite difference",
@@ -243,7 +243,7 @@ def build_data() -> dict[str, pd.DataFrame]:
             }
         )
     for elements, steps in [(30, 300), (60, 600), (90, 700)]:
-        err = max(abs(fem_retention(float(v), elements=elements, steps=steps) - spectral_retention(v)) for v in validation_pi)
+        err = max(abs(fem_retention(float(v), elements=elements, steps=steps) - spectral_retention(v)) for v in verification_pi)
         convergence_rows.append(
             {
                 "Check": "finite element",
@@ -389,7 +389,7 @@ def build_data() -> dict[str, pd.DataFrame]:
 
     return {
         "retention_curve": retention_curve,
-        "validation_fd_fem": validation,
+        "verification_fd_fem": verification,
         "convergence_checks": convergence,
         "benchmark_cases": cases,
         "literature_comparison": literature,
@@ -452,15 +452,15 @@ def make_figures(data: dict[str, pd.DataFrame]) -> None:
     fig.savefig(FIG_OUT / "Fig2.tif", bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
-    validation = data["validation_fd_fem"]
+    verification = data["verification_fd_fem"]
     fig, ax = plt.subplots(figsize=(7.2, 4.8), dpi=600, constrained_layout=True)
-    ax.loglog(validation["Pi"], validation["FD_abs_error"], "o-", label="implicit finite differences")
-    ax.loglog(validation["Pi"], validation["FEM_abs_error"], "s-", label="linear FEM")
+    ax.loglog(verification["Pi"], verification["FD_abs_error"], "o-", label="implicit finite differences")
+    ax.loglog(verification["Pi"], verification["FEM_abs_error"], "s-", label="linear FEM")
     ax.set_xlabel("Pi")
     ax.set_ylabel("Absolute error in R(Pi)")
     ax.grid(True, which="both", alpha=0.25)
     ax.legend(frameon=False)
-    fig.savefig(FIG_OUT / "figure_3_numerical_validation_errors.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIG_OUT / "figure_3_numerical_verification_errors.png", bbox_inches="tight", facecolor="white")
     fig.savefig(FIG_OUT / "Fig3.tif", bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
