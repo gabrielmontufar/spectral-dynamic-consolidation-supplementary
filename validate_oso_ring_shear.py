@@ -8,6 +8,7 @@ not a field-scale landslide calibration.
 
 from __future__ import annotations
 
+import argparse
 import json
 import math
 import urllib.request
@@ -33,6 +34,7 @@ SCIENCEBASE_PAGE = (
     "https://www.usgs.gov/data/data-ring-shear-strength-testing-"
     "glaciolacustrine-silty-clay-2014-oso-washington-landslide"
 )
+NORMALIZED_OFFLINE = OUT / "oso_ring_shear_normalized_records.csv"
 
 
 def survival_double(pi: np.ndarray | float, terms: int = 120) -> np.ndarray | float:
@@ -158,21 +160,45 @@ def fit_model(record: pd.DataFrame, model_name: str) -> dict[str, float]:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Validate retained-pressure operators against Oso ring-shear data.")
+    parser.add_argument(
+        "--offline",
+        action="store_true",
+        help="Use the included normalized Oso records instead of downloading raw ScienceBase files.",
+    )
+    args = parser.parse_args()
     FIG_OUT.mkdir(exist_ok=True)
-    paths = download_oso_files()
+    if args.offline and NORMALIZED_OFFLINE.exists():
+        normalized_records = [
+            (name, frame.drop(columns=["source_file"]).reset_index(drop=True))
+            for name, frame in pd.read_csv(NORMALIZED_OFFLINE).groupby("source_file", sort=False)
+        ]
+    else:
+        paths = download_oso_files()
+        normalized_records = []
+        for path in paths:
+            raw = load_record(path)
+            record = normalize_decay(raw)
+            if record is None:
+                continue
+            normalized_records.append((path.name, record))
+        if normalized_records:
+            pd.concat(
+                [
+                    frame.assign(source_file=name)
+                    for name, frame in normalized_records
+                ],
+                ignore_index=True,
+            ).to_csv(NORMALIZED_OFFLINE, index=False)
     summary_rows = []
     prediction_rows = []
-    for path in paths:
-        raw = load_record(path)
-        record = normalize_decay(raw)
-        if record is None:
-            continue
+    for source_name, record in normalized_records:
         if len(record) > 500:
             record = record.iloc[np.linspace(0, len(record) - 1, 500).astype(int)].reset_index(drop=True)
         fits = [fit_model(record, "double"), fit_model(record, "single")]
         best = min(fits, key=lambda row: row["rmse_validation"])
         for fit in fits:
-            fit["source_file"] = path.name
+            fit["source_file"] = source_name
             fit["best_model_for_record"] = best["model"]
             fit["sciencebase_page"] = SCIENCEBASE_PAGE
             summary_rows.append(fit)
@@ -183,7 +209,7 @@ def main() -> None:
             sample_idx = np.linspace(0, len(record) - 1, min(180, len(record))).astype(int)
             for idx in sample_idx:
                 prediction_rows.append({
-                    "source_file": path.name,
+                    "source_file": source_name,
                     "model": fit["model"],
                     "time_s": float(time[idx]),
                     "retained_observed": float(record["retained_observed"].iloc[idx]),
