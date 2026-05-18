@@ -1,0 +1,3 @@
+model,records,median_rmse_validation,median_r2_validation
+double,11,0.03880217519240716,-0.940383155749067
+single,11,0.03719707630585777,-1.0308722479423227
